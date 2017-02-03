@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width" />
+<script type="text/javascript" src="CustomElements.min.js">
+</script>
+<script type="text/javascript" src="dropzone.js">
+</script>
+<script type="text/javascript" src="terminal.js">
+</script>
+<script type="text/javascript" src="zion.js">
+</script>
+<link rel="stylesheet" type="text/css" href="zion.css" />
+<style type="text/css">
+html,body { width:100%; height:100%; margin:0; padding:0; }
+body { background: linear-gradient(#80acaf, #dbe6e8); }
+#terminal-popup { position:fixed; top:35px; left:100px; width:400px;height:230px; }
+#debug { display:block; position:fixed; bottom:3px; right: 3px; opacity:0.1; max-height: 24px; 
+max-width: 256px; }
+#debug:hover { opacity:1; max-height: 512px; max-width:512px; z-index:255;}
+</style>
+<script type="text/javascript">
+
+    var terminal = function() {return document.querySelector("#terminal-popup zion-terminal");}
+    var CR = "\n";
+
+    var Module = {
+        charIn: function(c){},
+        preRun: [(function() {
+            var _t = terminal();
+            var _dt = document.querySelector("#debug");
+            _t.startBufferingInput();
+            function charIn(c) {
+                var sc = _t.safeCaret();
+                if(c == 7) { 
+                    debug("BEEP");
+                    _t.className = "";
+                    _t.className = "bell";
+                    setTimeout(function() {
+                        _t.className = "";
+                    },1200);
+                } else if(c == 10) { 
+                    // line feed, down
+                    debug("LF");
+                    var sc = _t.safeCaret();
+                    if(sc.after.data.indexOf(CR) == -1) {
+                        sc.after.appendData(CR);
+                    }
+                    _t.caretDown();
+                } else if(c == 13) {
+                    // carriage return, left
+                    debug("CR");
+                    vim_startOfLine();
+                } else {
+                    if((c<32) || (c==127)) debug("["+c+"]");
+                    var sc = _t.safeCaret();
+                    var following = sc.after.data;
+                    sc.before.appendData(String.fromCharCode(+c));
+                    debug_(String.fromCharCode(+c));
+                    /*
+                    if(!following.startsWith("\n")) {
+                        sc.after.deleteData(0,1);
+                    }
+                    */
+                }
+            }
+            Module.charIn = charIn;
+            FS.init(function() {
+                var key_struct = _t._io_keys.pop();
+                if(key_struct) {
+                    return +key_struct.c;
+                }
+                return null;
+            },charIn,function(c) {
+                _dt.textContent += String.fromCharCode(c);
+            })
+        })],
+        postRun: [],
+        print: (function(s) {console.log(s);if(debug){debug(s)}}),
+        printErr: (function(s) {console.log(s);if(debug){debug(s)}}),
+        canvas: (function() {}),
+        setStatus: function(text) {},
+        totalDependencies: 0,
+        monitorRunDependencies: function(left) {},
+    };
+
+
+    function vim_getRows() {
+        return 24;
+        //return 3;
+    };
+    function vim_getCols() {
+        return 80;
+    };
+    function vim_setClearColour() {
+    };
+    function vim_eraseDisplay() {
+        var t = terminal();
+        [].forEach.call(t.childNodes, function(node) {
+            if(node.nodeType == Node.TEXT_NODE) {
+                t.removeChild(node);
+            }
+        });
+        debug("erase_display");
+    };
+    function vim_eraseLine() {
+        var t = terminal();
+        var sc = t.safeCaret();
+
+        // Remove till start of line
+        var before = sc.before.data;
+        var sol = before.lastIndexOf(CR)+1;
+        var col = before.length-sol;
+        sc.before.deleteData(sol, before.length);
+
+        // Remove till end of line, including CR
+        var after = sc.after.data;
+        var eol = after.indexOf(CR);
+        //sc.after.deleteData(0, eol+1);
+
+        // Cursor doesn't move on next line
+        /*
+        eol = sc.after.data.indexOf(CR);
+        if(eol == -1) {
+            sc.after.appendData(CR);   
+        } 
+        after = sc.after.data;
+        eol = sc.after.data.indexOf(CR);
+        if(col <= eol) {
+            var start = after.substring(0,col);
+            sc.after.deleteData(0, col);
+            sc.before.appendData(start);
+        } else {
+            alert("Oopsie : "+col+","+eol);
+        }
+        */
+
+        debug("erase_line "+(before.split(CR).length-1)+", col="+col);
+    };
+    function vim_endOfLine() {
+        var t = terminal();
+        var sc = t.safeCaret();
+        var dat = sc.after.data;
+        var sol = dat.indexOf(CR);
+        if(sol == -1) {
+            sc.before.appendData(dat);
+            sc.after.deleteData(0,dat.length);
+        } else if(sol > 0) {
+            var removed = dat.substring(0,sol);
+            sc.after.deleteData(0,sol);
+            sc.before.appendData(removed);
+        }
+    }
+    function vim_startOfLine() {
+        var t = terminal();
+        var sc = t.safeCaret();
+        var dat = sc.before.data;
+        var sol = dat.lastIndexOf(CR);
+        if(sol != (dat.length-1)) {
+            var removed = dat.substring(sol+1);
+            sc.before.deleteData(sol+1,dat.length);
+            sc.after.insertData(0,removed);
+        }
+    }
+    function vim_removeOverflow() {
+        var t = terminal();
+        var rows = t.textContent.split(CR);
+        var lines = rows.length;
+        var n = vim_getRows();
+        if(lines > n) {
+            var i = rows.slice(0,n).join("\n").length;
+            var sc = t.safeCaret();
+            var j = i-sc.before.data.length;
+            sc.after.deleteData(j,sc.after.length);
+            debug("removing after "+j+" on row "+n+" out of "+lines);
+        }
+    };
+    function vim_moveCursor(col,row) {
+        var t = terminal();
+        var sc = t.safeCaret();
+
+        // If 2 lines and row 3, must add 1 line
+        // lines=2, row=3, i=1, 1 iteration
+        var lines = t.textContent.split(CR).length;
+        for(var i = row-lines+1; i>0; i--) {
+            sc.after.appendData("\n");
+        }
+
+        var rows = t.textContent.split(CR);
+        var current = rows[row];
+        if(current.length<col) {
+            current += new Array(col-current.length+1).join(" ");
+        }
+
+        var before = rows.slice(0,row)
+                    .concat(current.substring(0, col))
+                    .join("\n")
+                    ;
+        var after = [current.substring(col)]
+                    .concat(rows.slice(row+1))
+                    .join("\n")
+                    ;
+
+        sc.before.data = before;
+        sc.after.data = after;
+
+        debug("move x="+col+", y="+row);
+        
+        // Heuristic for now
+        // t.scrollTop = t.scrollHeight;
+    };
+    function vim_eventLoop() {
+        var t = terminal();
+        // t.scrollTop = t.scrollHeight;
+        t.focus();
+        _vim_eventLoop();
+    }
+    function _vim_eventLoop() {
+        Module.ccall("xvi_event_loop");
+        setTimeout(_vim_eventLoop, 50);
+    }
+    function vim_flashScreen() {
+        debug("BEEEP!");
+    }
+</script>
+</head>
+<body>
+
+<zion-drop style="display:none"></zion-drop>
+
+<zion-terminal id="debug"></zion-terminal>
+
+<div id="terminal-popup">
+<zion-terminal tabindex="0">$ <zion-caret></zion-caret></zion-terminal>
+</div>
+
+<script type="text/javascript">
+    (function() {
+      var memoryInitializer = 'xvi249_src/xvi.html.mem';
+      if (typeof Module['locateFile'] === 'function') {
+        memoryInitializer = Module['locateFile'](memoryInitializer);
+      } else if (Module['memoryInitializerPrefixURL']) {
+        memoryInitializer = Module['memoryInitializerPrefixURL'] + memoryInitializer;
+      }
+      var xhr = Module['memoryInitializerRequest'] = new XMLHttpRequest();
+      xhr.open('GET', memoryInitializer, true);
+      xhr.responseType = 'arraybuffer';
+      xhr.send(null);
+    })();
+
+    var script = document.createElement('script');
+    script.src = "xvi249_src/xvi.js";
+    document.body.appendChild(script);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width" />
+<script type="text/javascript" src="CustomElements.min.js">
+</script>
+<script type="text/javascript" src="dropzone.js">
+</script>
+<script type="text/javascript" src="terminal.js">
+</script>
+<script type="text/javascript" src="zion.js">
+</script>
+<link rel="stylesheet" type="text/css" href="zion.css" />
+<style type="text/css">
+html,body { width:100%; height:100%; margin:0; padding:0; }
+body { background: linear-gradient(#80acaf, #dbe6e8); }
+#terminal-popup { position:fixed; top:35px; left:100px; width:400px;height:230px; }
+#debug { display:block; position:fixed; bottom:3px; right: 3px; opacity:0.1; max-height: 24px; 
+max-width: 256px; }
+#debug:hover { opacity:1; max-height: 512px; max-width:512px; }
+</style>
+</head>
+<body>
+
+<zion-drop style="display:none"></zion-drop>
+
+<zion-terminal id="debug"></zion-terminal>
+
+<div id="terminal-popup" style="display:none">
+<zion-terminal tabindex="0">$ <zion-caret></zion-caret></zion-terminal>
+</div>
+
+</body>
+</html>
