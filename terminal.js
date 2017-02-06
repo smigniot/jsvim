@@ -2,10 +2,14 @@ var ZionTerminal = Object.create(HTMLElement.prototype);
 ZionTerminal.CARET = "$ ";
 ZionTerminal.CARET_RE = /^\$/;
 ZionTerminal.attachedCallback = function() {
-    this.addEventListener("keypress",this.onkey.bind(this));
+    this.addEventListener("keypress",this.on_event_press.bind(this));
+    this.addEventListener("keyup",this.on_event_up.bind(this));
+    this.addEventListener("keydown",this.on_event_down.bind(this));
 };
 ZionTerminal.detachedCallback = function() {
-    this.removeEventListener("keypress",this.onkey.bind(this));
+    this.removeEventListener("keypress",this.on_event_press.bind(this));
+    this.removeEventListener("keyup",this.on_event_up.bind(this));
+    this.removeEventListener("keydown",this.on_event_down.bind(this));
 };
 ZionTerminal.eval = function(line) {
     switch(line) {
@@ -38,11 +42,29 @@ ZionTerminal.reset = function() {
 ZionTerminal.startBufferingInput = function() {
     this._io_keys = [];       
 };
+ZionTerminal.SPECIALS = [8,9,13,27];
+ZionTerminal.on_event_press = function(event) {
+    if(this.SPECIALS.indexOf(event.keyCode) == -1) {
+        this.onkey(event);
+    }
+};
+ZionTerminal.on_event_down = function(event) {
+    if(event.keyCode == 8) {
+        event.preventDefault && event.preventDefault();
+    }
+};
+ZionTerminal.on_event_up = function(event) {
+    if(this.SPECIALS.indexOf(event.keyCode) != -1) {
+        this.onkey(event);
+    }
+};
 ZionTerminal.onkey = function(event) {
     event && event.preventDefault && event.preventDefault();
     var k = event.key;
     var c = event.charCode;
     var kc = event.keyCode;
+
+    // NEW JSVIM - transpiled xvi-249
     if(this._io_keys) {
         this._io_keys.push({
             "k" : event.key,
@@ -51,6 +73,8 @@ ZionTerminal.onkey = function(event) {
         });
         return;
     }
+
+    // OLD JSVIM - textarea-like mode
     var caret = this.querySelector("zion-caret");
     if(caret) {
         var text = caret.previousSibling;
