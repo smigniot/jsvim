@@ -289,7 +289,7 @@ rn_new(str)
 
     if ((retp = alloc(sizeof (Rnode))) == NULL)
 	return NULL;
-    if ((retp->rn_ptr = regcomp(str)) == NULL) {
+    if ((retp->rn_ptr = regcomp_jsvim(str)) == NULL) {
 	free (retp);
 	return NULL;
     }
@@ -335,7 +335,7 @@ Rnode	*rp;
  *
  * The regular expression is converted to egrep syntax by mapstring(),
  * which also finds the closing delimiter. The actual compilation is
- * done by regcomp(), from Henry Spencer's regexp routines.
+ * done by regcomp_jsvim(), from Henry Spencer's regexp routines.
  *
  * If we're successful, the compiled regular expression will be
  * pointed to by lastprogp->rn_ptr, & lastprogp->rn_count will be > 0.
@@ -511,10 +511,11 @@ char	**strp;		/* The search pattern without the initial / or ? */
 }
 
 /*
- * regerror - called by regexp routines when errors are detected.
+ * regerror_jsvim - called by regexp routines when errors are detected.
  */
+// JSVIM
 void
-regerror(s)
+regerror_jsvim(s)
 char	*s;
 {
     if (echo & e_REGERR) {
@@ -541,7 +542,7 @@ int	ind;
     s = line->l_text + ind;
     prog = cur_prog();
 
-    if (regexec(prog, s, (ind == 0))) {
+    if (regexec_jsvim(prog, s, (ind == 0))) {
 	int	llen;
 
 	matchposn.p_line = line;
@@ -776,7 +777,7 @@ bool_t		matchtype;
      * cmdchar. If there is no such character, we default to 'p'.
      */
     if (*cmd == '\0' || (cmd = compile(&cmd[1], *cmd, FALSE)) == NULL) {
-	regerror(matchtype ?
+	regerror_jsvim(matchtype ?
 		"Usage: :g/search pattern/command" :
 		"Usage: :v/search pattern/command");
 	return(FALSE);
@@ -802,7 +803,7 @@ bool_t		matchtype;
 	}
 	break;
     default:
-	regerror("Invalid command character");
+	regerror_jsvim("Invalid command character");
 	return(FALSE);
     }
 
@@ -875,7 +876,7 @@ bool_t		matchtype;
      */
     ndone = 0;
     while (lp != up) {
-	if (matchtype == regexec(prog, lp->l_text, TRUE)) {
+	if (matchtype == regexec_jsvim(prog, lp->l_text, TRUE)) {
 	    Line	*thisline;
 
 	    /*
@@ -960,7 +961,7 @@ bool_t		matchtype;
     }
 
     if (ndone == 0 && (echo & e_NOMATCH)) {
-	regerror("No match");
+	regerror_jsvim("No match");
 	return(FALSE);
     }
 
@@ -976,7 +977,7 @@ grep_line()
     prog = cur_prog();
     for ( ; curline != lastline; curline = curline->l_next, curnum++) {
 
-	if (greptype == regexec(prog, curline->l_text, TRUE)) {
+	if (greptype == regexec_jsvim(prog, curline->l_text, TRUE)) {
 
 	    flexclear(&b);
 	    if (Pb(P_number)) {
@@ -1022,12 +1023,12 @@ unsigned long	lnum;
     register int	rxtype;     /* can be rt_TAGS, rt_GREP or rt_EGREP */
 
     if (prog == NULL || src == NULL || dest == NULL) {
-	regerror("NULL parameter to regsubst");
+	regerror_jsvim("NULL parameter to regsubst");
 	return;
     }
 
     if (UCHARAT(prog->program) != MAGIC) {
-	regerror("Damaged regexp fed to regsubst");
+	regerror_jsvim("Damaged regexp fed to regsubst");
 	return;
     }
 
@@ -1095,7 +1096,7 @@ unsigned long	lnum;
 	     */
 	    for (cp = prog->startp[no]; cp < prog->endp[no]; cp++) {
 		if (*cp == '\0') {
-		    regerror("Damaged match string");
+		    regerror_jsvim("Damaged match string");
 		    return;
 		} else {
 		    add_char_to_rhs(dest, *cp, ul);
@@ -1179,7 +1180,7 @@ char	*command;
     delimiter = *copy;
     if (delimiter == '\0' ||
 			(cp = compile(&copy[1], delimiter, TRUE)) == NULL) {
-	regerror("Usage: :s/search pattern/replacement/");
+	regerror_jsvim("Usage: :s/search pattern/replacement/");
 	free(copy);
 	return(0);
     }
@@ -1376,7 +1377,7 @@ char	*flags;
     }
     flexnew(&ns);
     for (; lp != up; lp = lp->l_next) {
-	if (regexec(prog, lp->l_text, TRUE)) {
+	if (regexec_jsvim(prog, lp->l_text, TRUE)) {
 	    char	*p, *matchp;
 
 	    /*
@@ -1422,7 +1423,7 @@ char	*flags;
 		    }
 		}
 
-	    } while (do_all && regexec(prog, matchp, FALSE));
+	    } while (do_all && regexec_jsvim(prog, matchp, FALSE));
 
 	    /*
 	     * Copy the rest of the line, that didn't match.
@@ -1437,7 +1438,7 @@ char	*flags;
     end_command();
 
     if (!nsubs && (echo & e_NOMATCH)) {
-	regerror("No match");
+	regerror_jsvim("No match");
     }
     return(nsubs);
 }

@@ -58,12 +58,13 @@ typedef struct regexp {
 #   include "xvi.h"
 #endif
 
-/* regerror.c */
-extern	void	regerror P((char *s));
+/* regerror_jsvim.c */
+extern	void	regerror_jsvim P((char *s));
 
 /* regexp.c */
-extern	regexp	*regcomp P((char *exp));
-extern	int	regexec P((regexp *prog, char *string, int at_bol));
+// JSVIM
+extern	regexp	*regcomp_jsvim P((char *exp));
+extern	int	regexec_jsvim P((regexp *prog, char *string, int at_bol));
 
 /* regsub.c */
 extern void	regsub P((regexp *prog, char *source, char *dest));

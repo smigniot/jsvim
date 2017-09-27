@@ -21,7 +21,8 @@
 SYSDEFS=	-DUNIX -DTERMIOS -DPOSIX
 INCDIRS=
 
-LIBS=		-ltermcap
+# JSVIM LIBS=		-ltermcap
+LIBS=
 LDFLAGS=
 
 DEBUGFLAG=	-g
@@ -59,7 +60,11 @@ GENOBJ=		alloc.o altstack.o ascii.o buffers.o \
 		version.o vi_cmds.o vi_ops.o virtscr.o \
 		windows.o yankput.o
 
-all:		xvi
+all:		xvi xvi.html
+
+xvi.html:		$(GENOBJ) $(MACHOBJ)
+		echo "Using LDFLAGS=$(LDFLAGS) and LIBS=$(LIBS)"
+		emcc -s EXPORTED_FUNCTIONS="['_main']" -s NO_EXIT_RUNTIME=1 $(CFLAGS) $(LDFLAGS) -o xvi.html $(GENOBJ) $(MACHOBJ) $(LIBS)
 
 xvi:		$(GENOBJ) $(MACHOBJ)
 		$(CC) $(CFLAGS) $(LDFLAGS) -o xvi $(GENOBJ) $(MACHOBJ) $(LIBS)

@@ -55,10 +55,15 @@
 
 ***/
 
+// JSVIM
+#include "jsvim_types.h"
+
+
 #ifdef AIX
 #include <curses.h>
 #else
-#include <termcap.h>
+//JSVIM
+//#include <termcap.h>
 #endif
 
 #include "xvi.h"

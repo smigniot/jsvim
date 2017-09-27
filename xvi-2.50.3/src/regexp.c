@@ -68,7 +68,7 @@ char	*cstrchr P((char *s, int c));
  * that regcomp() supplies a regmust only if the r.e. contains something
  * potentially expensive (at present, the only such thing detected is * or +
  * at the start of the r.e., which can involve a lot of backup).  Regmlen is
- * supplied because the test in regexec() needs it and regcomp() is computing
+ * supplied because the test in regexec_jsvim() needs it and regcomp() is computing
  * it anyway.
  */
 
@@ -157,7 +157,7 @@ char	*cstrchr P((char *s, int c));
 #define UCHARAT(p)	((int)*(p)&CHARBITS)
 #endif
 
-#define FAIL(m)		{ regerror(m); return(NULL); }
+#define FAIL(m)		{ regerror_jsvim(m); return(NULL); }
 #define ISMULT(c)	((c) == '*' || (c) == '+' || (c) == '?')
 #define META		"^$.[()|?+*\\"
 
@@ -222,7 +222,7 @@ STATIC	void	regoptail P((char *p, char *val));
  * of the structure of the compiled regexp.
  */
 regexp *
-regcomp(exp)
+regcomp_jsvim(exp)
 char *exp;
 {
     register regexp *r;
@@ -755,11 +755,11 @@ char *val;
 }
 
 /*
- * regexec and friends
+ * regexec_jsvim and friends
  */
 
 /*
- * Global work variables for regexec().
+ * Global work variables for regexec_jsvim().
  */
 static char *reginput;		/* String-input pointer. */
 static char *regbol;		/* Beginning of input, for ^ check. */
@@ -780,10 +780,10 @@ STATIC	int	regrepeat P((char *p));
 #endif
 
 /*
- - regexec - match a regexp against a string
+ - regexec_jsvim - match a regexp against a string
  */
 int
-regexec(prog, string, at_bol)
+regexec_jsvim(prog, string, at_bol)
 register regexp *prog;
 register char *string;
 int at_bol;
@@ -792,13 +792,13 @@ int at_bol;
 
     /* Be paranoid... */
     if (prog == NULL || string == NULL) {
-	regerror("NULL parameter");
+	regerror_jsvim("NULL parameter");
 	return(0);
     }
 
     /* Check validity of program. */
     if (UCHARAT(prog->program) != MAGIC) {
-	regerror("Corrupted program");
+	regerror_jsvim("Corrupted program");
 	return(0);
     }
 
@@ -1110,7 +1110,7 @@ char *prog;
 	    return(1);	/* Success! */
 	    break;
 	default:
-	    regerror("Memory corruption");
+	    regerror_jsvim("Memory corruption");
 	    return(0);
 	    break;
 	}
@@ -1122,7 +1122,7 @@ char *prog;
      * We get here only if there's trouble -- normally "case END" is
      * the terminating point.
      */
-    regerror("Corrupted pointers");
+    regerror_jsvim("Corrupted pointers");
     return(0);
 }
 
@@ -1163,7 +1163,7 @@ char *p;
 	}
 	break;
     default:		/* Oh dear.  Called inappropriately. */
-	regerror("Internal foulup");
+	regerror_jsvim("Internal foulup");
 	count = 0;	/* Best compromise. */
 	break;
     }
@@ -1316,7 +1316,7 @@ char *op;
 	p = "PLUS";
 	break;
     default:
-	regerror("Corrupted opcode");
+	regerror_jsvim("Corrupted opcode");
 	break;
     }
     if (p != NULL)

@@ -542,10 +542,10 @@ int		cmd_char;
     p = search(window->w_cursor->p_line,
 	       window->w_cursor->p_index, dir, &str);
     if (p == NULL) {
-	regerror("Pattern not found");
+	regerror_jsvim("Pattern not found");
 	retpos = NULL;
     } else if (*str != '\0') {
-	regerror("Usage: /pattern or ?pattern");
+	regerror_jsvim("Usage: /pattern or ?pattern");
 	retpos = NULL;
     } else {
 	retpos = p;
