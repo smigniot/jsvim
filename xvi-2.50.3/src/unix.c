@@ -181,7 +181,9 @@ static	Termstate	cooked_state, raw_state;
  * Expected for termcap's benefit.
  */
 #ifndef AIX
-extern short		ospeed;			/* tty's baud rate */
+short		ospeed = 19200;			/* JSVIM: max legal as short */
+// JSVIM
+// extern short		ospeed;			/* tty's baud rate */
 #endif
 
 /*

@@ -152,9 +152,14 @@ unsigned int	LI = 0;
  * Needed by termcap library.
  */
 #ifndef AIX
-extern	char	PC;	/* pad character, not used by xvi. */
-extern	char *	BC;	/* backspace if not ^H. Don't use this. Use bc. */
-extern	char *	UP;	/* move up one line. Don't use this. Use up. */
+// JSVIM
+// extern	char	PC;	/* pad character, not used by xvi. */
+// extern	char *	BC;	/* backspace if not ^H. Don't use this. Use bc. */
+// extern	char *	UP;	/* move up one line. Don't use this. Use up. */
+char PC;
+char C_BC = '\b';
+char* BC = &C_BC;
+char* UP = NULL;
 #endif
 
 /*
