@@ -188,10 +188,9 @@ int tgetLI(char *unused2) {
 }
 
 int tgetnum(char *id) {
-    int isCO = strcmp("co",id);
-    int isLI = strcmp("li",id);
+    EM_ASM_({console.log("TGETNUM",UTF8ToString($0));},id);
+    return EM_ASM_INT({return vim_tgetnum(UTF8ToString($0))},id);
 
-    return EM_ASM_INT({return vim_tgetnum($0,$1)},isCO,isLI);
     /*
     if(strcmp("co",id)==0) {
         return tgetCO(id);
@@ -204,6 +203,7 @@ int tgetnum(char *id) {
 
 
 char *tgetstr(char *id, char **area) {
+    EM_ASM_({console.log("TGETSTR",UTF8ToString($0));},id);
     if(strcmp("cm",id)==0) {
         char *clone = strdup("\033[<L>;<C>f");
         *area = clone;

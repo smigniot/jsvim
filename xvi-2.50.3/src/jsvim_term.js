@@ -1,4 +1,5 @@
-function vim_tgetnum(isCO, isLI) {
-    console.log("TGETNUM", isCO, isLI);
-    return isCO?80:(isLI?25:0);
+function vim_tgetnum(id) {
+    if("co" == id) return 80;
+    if("li" == id) return 25;
+    return 0;
 }

@@ -65,7 +65,7 @@ GENOBJ=		alloc.o altstack.o ascii.o buffers.o \
 all:		xvi xvi.html work.html
 
 xvi.html:		$(GENOBJ) $(MACHOBJ)
-		emcc -s EXPORTED_FUNCTIONS="['_main']" -s NO_EXIT_RUNTIME=1 $(CFLAGS) $(LDFLAGS) -o xvi.html $(GENOBJ) $(MACHOBJ) $(LIBS)
+		emcc -s EXPORTED_FUNCTIONS="['_main']" -s ASSERTIONS=1 -s NO_EXIT_RUNTIME=1 $(CFLAGS) $(LDFLAGS) -o xvi.html $(GENOBJ) $(MACHOBJ) $(LIBS)
 
 work.html: xvi.html
 		cat xvi.html | sed 's/<head>/&<script type="text\/javascript" src="jsvim_term.js"><\/script>/' > work.html
