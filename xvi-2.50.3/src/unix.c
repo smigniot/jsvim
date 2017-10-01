@@ -22,6 +22,7 @@
 ***/
 
 #include	"xvi.h"
+#include <emscripten.h> 
 
 /*
  * CTRL is defined by sgtty.h (or by a file it includes)
@@ -456,6 +457,8 @@ sys_init()
     unsigned int	rows = 0;
     unsigned int	columns = 0;
 
+    EM_ASM_({console.log("SYS_INIT",$0);},rows);
+
 #ifdef MEMTEST
     {
 	static struct rlimit dlimit = { 400 * 1024, 400 * 1024 };
@@ -591,17 +594,21 @@ sys_init()
      */
     getScreenSize(&rows, &columns);
 
+    EM_ASM_({console.log("SYS_INIT","tty_open", $0);},rows);
+
     /*
      * Now set up the terminal interface.
      */
     tty_open(&rows, &columns);
 
+    EM_ASM_({console.log("SYS_INIT","sys_startv", $0);},rows);
     /*
      * Go into raw/cbreak mode, and do any initialisation stuff.
      */
     sys_startv();
 
     subshells = TRUE;
+    EM_ASM_({console.log("SYS_INIT","done", $0);},rows);
 }
 
 void
@@ -671,17 +678,35 @@ sys_startv()
 {
     if (curmode == m_VI)
 	return;
+
+    EM_ASM_({console.log("SYS_STARTV","start", $0);},curmode);
+
+    /*
+     * JSVIM
+     *
+     * Let's assume here that the TIOC* functions
+     * set or get terminal behavior variables and 
+     * we don't really care as long as
+     * 1. Jsvim will have to handle it through the async DOM (no tty here)
+     * 2. Those are not "TIOCGET*" again in the source (a.k.a global variable, checked)
+     *
 #ifdef	TERMIO
     w_setstate(&raw_state);
 #else
+    EM_ASM_({console.log("SYS_STARTV",$0);}, &raw_state);
     (void) ioctl(0, TIOCSETN, (char *) &raw_state);
+    EM_ASM_({console.log("SYS_STARTV",$0);}, &raw_tchars);
     (void) ioctl(0, TIOCSETC, (char *) &raw_tchars);
+    EM_ASM_({console.log("SYS_STARTV",$0);}, &raw_ltchars);
     (void) ioctl(0, TIOCSLTC, (char *) &raw_ltchars);
 #endif
+    */
 
+    EM_ASM_({console.log("SYS_STARTV","TTY_startv",$0);},0);
     tty_startv();
 
     curmode = m_VI;
+    EM_ASM_({console.log("SYS_STARTV","done", $0);},curmode);
 }
 
 /*

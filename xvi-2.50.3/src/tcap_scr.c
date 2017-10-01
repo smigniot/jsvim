@@ -57,6 +57,7 @@
 
 // JSVIM
 #include "jsvim_types.h"
+#include <emscripten.h> 
 
 
 #ifdef AIX
@@ -862,6 +863,8 @@ unsigned int	*pcolumns;
     if (termtype == NULL || *termtype == '\0') {
 	termtype = "ansi";
     }
+    EM_ASM_({console.log("TTY_OPEN",UTF8ToString($0));},termtype);
+
     switch (tgetent(tcbuf, termtype)) {
     case -1:
 	fail("Can't open termcap.");
@@ -1087,6 +1090,7 @@ unsigned int	*pcolumns;
 	    xvi_keymap(lhs, keys[i].key_rhs);
 	}
     }
+    EM_ASM_({console.log("TTY_OPEN done",UTF8ToString($0));},termtype);
 }
 
 /*

@@ -3,3 +3,7 @@ function vim_tgetnum(id) {
     if("li" == id) return 25;
     return 0;
 }
+
+function vim_tputs(str, affcnt) {
+    console.log("TPUTS", str, affcnt);
+}
