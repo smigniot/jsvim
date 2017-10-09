@@ -159,7 +159,6 @@ int terminfo_linux_len = 1794;
 
 int tputs(const char *str, int affcnt, int (*putc)(int)) {
     return EM_ASM_INT({return vim_tputs(UTF8ToString($0),$1)},str,affcnt);
-    //return ERR;
 }
 
 int tgetflag(char *id) {
@@ -170,35 +169,11 @@ int tgetent(char *bp, const char *name) {
     // Return the constant linux termcap entry
     strcpy(bp, terminfo_linux);
     return terminfo_linux_len;
-    //return ERR;
-}
-
-int tgetCO(char *unused1) {
-    return EM_ASM_INT({return vim_tputs($0)},unused1);
-    // return EM_ASM_INT({return vim_tw($0)},unused1);
-}
-
-int tunused() {
-    return 42;
-}
-
-int tgetLI(char *unused2) {
-    return EM_ASM_INT({return vim_tputs($0)},unused2);
-    // return EM_ASM_INT({return vim_th($0)},unused2);
 }
 
 int tgetnum(char *id) {
     EM_ASM_({console.log("TGETNUM",UTF8ToString($0));},id);
     return EM_ASM_INT({return vim_tgetnum(UTF8ToString($0))},id);
-
-    /*
-    if(strcmp("co",id)==0) {
-        return tgetCO(id);
-    } else if(strcmp("li",id)==0) {
-        return tgetLI(id);
-    }
-    return ERR;
-    */
 }
 
 
@@ -223,19 +198,9 @@ char *tgoto(char *cap, int col, int row) {
     return cap;
 }
 
-
-/*
-void vim_tputs_tgoto_AL() {
-    EM_ASM({
-        try {
-            alert("TODO");
-            return vim_insertBlankLineBefore();
-        } catch(err) {
-            console.log("vim_insertBlankLineBefore", err);
-        }
-    });
+int
+kbgetc()
+{
+    return EM_ASM_INT({return vim_kbgetc($0)},0);
 }
-*/
-
-
 

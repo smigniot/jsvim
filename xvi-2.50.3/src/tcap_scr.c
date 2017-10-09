@@ -288,6 +288,12 @@ int	sig;
     win_size_changed = TRUE;
 }
 
+static struct {
+    VirtScr* vs;
+    long timeout;
+    xvEvent event;
+} jsvim_global_context;
+
 void
 tcap_scr_main(argc, argv)
 int	argc;
@@ -295,8 +301,10 @@ char	*argv[];
 {
     register VirtScr	*vs;
     xvEvent		event;
-    long		timeout = 0;
+    jsvim_global_context.timeout = 0;
+    short unused0 = 0;
 
+    EM_ASM_({console.log("MAIN","start",$0);},0);
     vs = &tcap_scr;
 
     /*
@@ -344,11 +352,29 @@ char	*argv[];
 
     flushout(vs);	/* Flush startup screen */
     event.ev_vs = vs;
+    EM_ASM_({console.log("MAINLOOP","start",$0);},0);
+
+    jsvim_global_context.vs = vs;
+    jsvim_global_context.event = event;
+    /*
     while (1) {
+        jsvim_main_loop();
+    }
+    */
+    jsvim_main_loop();
+}
+
+void 
+jsvim_main_loop() 
+{
+        xvEvent     event = jsvim_global_context.event;
+        VirtScr*    vs =    jsvim_global_context.vs;
 	xvResponse	*resp;
 	register int	r;
 
-	r = inch(timeout);
+	EM_ASM_({console.log("JSVIM_MAIN_LOOP",$0);},0);
+	r = inch(jsvim_global_context.timeout);
+	EM_ASM_({console.log("DBG2",$0);},0);
 	if (r == EOF) {
 	    if (kbdintr) {
 		event.ev_type = Ev_breakin;
@@ -376,7 +402,7 @@ char	*argv[];
 		    vs->pv_cols = CO = new_cols;
 		} else {
 		    pbeep(vs);
-		    continue;		/* don't process this event */
+		    return; /* don't process this event */
 		}
 	    } else {
 		event.ev_type = Ev_timeout;
@@ -385,12 +411,16 @@ char	*argv[];
 	    event.ev_type = Ev_char;
 	    event.ev_inchar = r;
 	}
+        EM_ASM_({console.log("DBG3",$0);},0);
+
+        //EM_ASM_({console.log("EVENT",$0);},0);
 	resp = xvi_handle_event(&event);
 	if (resp->xvr_type == Xvr_exit) {
 	    sys_exit(resp->xvr_status);
 	}
-	timeout = resp->xvr_timeout;
-    }
+        EM_ASM_({console.log("DBG4",$0);},0);
+	jsvim_global_context.timeout = resp->xvr_timeout;
+        EM_ASM_({console.log("DBG5",$0);},0);
 }
 
 /*ARGSUSED*/

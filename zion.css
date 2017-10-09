@@ -44,9 +44,9 @@ zion-caret {
     to    { box-shadow:0px 0px 4px 2px #C00000; }
 }
 @keyframes zionglow { 
-    from  { box-shadow:0px 0px 4px 2px #0000C0; }
+    from  { box-shadow:0px 0px 4px 2px #4040C0; }
     50%   { box-shadow:0px 0px 0px 0px #000000; }
-    to    { box-shadow:0px 0px 4px 2px #0000C0; }
+    to    { box-shadow:0px 0px 4px 2px #4040C0; }
 }
 zion-file {
     display: inline-block;

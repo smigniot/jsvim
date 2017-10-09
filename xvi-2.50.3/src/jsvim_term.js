@@ -7,3 +7,9 @@ function vim_tgetnum(id) {
 function vim_tputs(str, affcnt) {
     console.log("TPUTS", str, affcnt);
 }
+
+function vim_kbgetc() {
+    // FIXME: returns EOF in dev mode, replace by
+    // jsvim's zion-terminal key buffer consumption
+    return 0;
+}

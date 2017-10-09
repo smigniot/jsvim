@@ -3,5 +3,6 @@
 
 // #define bool_t bool
 typedef int             bool_t;
+void jsvim_main_loop();
 
 
