@@ -27,48 +27,5 @@ max-width: 256px; }
 <zion-terminal id="jsvim" tabindex="0">
 </zion-terminal>
 
-<!-- sacript type="text/javascript">
-(function() {
-    console.log("XVI 1");
-    var Module = {
-        preRun: [],
-        postRun: [],
-        print: function(text) {
-            console.log("STDOUT", text);
-        },
-        printErr: function(text) {
-            console.log("STDERR", text);
-        },
-        setStatus: function() {
-            console.log("UNUSED", "setStatus");
-        },
-        canvas:null,
-        totalDependencies: 0,
-        monitorRunDependencies: function() {
-            console.log("UNUSED", "monitorRunDependencies");
-        },
-    };
-
-    console.log("XVI 2");
-    var memoryInitializer = 'xvi-2.50.3/src/xvi.html.mem';
-    if (typeof Module['locateFile'] === 'function') {
-        memoryInitializer = Module['locateFile'](memoryInitializer);
-    } else if (Module['memoryInitializerPrefixURL']) {
-        memoryInitializer = Module['memoryInitializerPrefixURL'] + memoryInitializer;
-    }
-
-    console.log("XVI 3");
-    var xhr = Module['memoryInitializerRequest'] = new XMLHttpRequest();
-    xhr.open('GET', memoryInitializer, true);
-    xhr.responseType = 'arraybuffer';
-    xhr.send(null);
-})();
-
-console.log("XVI 4");
-var script = document.createElement('script');
-script.src = "xvi-2.50.3/src/xvi.js";
-document.body.appendChild(script);
-</sacript -->
-
 </body>
 </html>

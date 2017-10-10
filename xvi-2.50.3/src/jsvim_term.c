@@ -172,24 +172,29 @@ int tgetent(char *bp, const char *name) {
 }
 
 int tgetnum(char *id) {
-    EM_ASM_({console.log("TGETNUM",UTF8ToString($0));},id);
-    return EM_ASM_INT({return vim_tgetnum(UTF8ToString($0))},id);
+    int c = EM_ASM_INT({return vim_tgetnum(UTF8ToString($0))},id);
+    EM_ASM_({console.log("TGETNUM",UTF8ToString($0),"=",$1);},id,c);
+    return c;
 }
 
 
 char *tgetstr(char *id, char **area) {
-    EM_ASM_({console.log("TGETSTR",UTF8ToString($0));},id);
-    if(strcmp("cm",id)==0) {
-        char *clone = strdup("\033[<L>;<C>f");
-        *area = clone;
-        return clone;
-    } else if(strcmp("ce",id)==0) {
-        return strcpy(*area, "\033[K");
-        char *clone = strdup("\033[K");
-        *area = clone;
-        return clone;
+    char *result = NULL;
+    if(strcmp("cm",id)==0) { result = strdup("\033[<L>;<C>f"); }
+    else if(strcmp("bc",id)==0) { result = strdup("\b"); }
+    else if(strcmp("up",id)==0) { result = strdup("\033[1A"); }
+    else if(strcmp("do",id)==0) { result = strdup("\033[1B"); }
+    else if(strcmp("cr",id)==0) { result = strdup("\r"); }
+    else if(strcmp("nd",id)==0) { result = strdup("\033[1C"); }
+    else if(strcmp("ce",id)==0) { result = strdup("\033[K"); }
+    //TODO: else if(strcmp("cl",id)==0) { result = strdup("\033[K"); }
+
+    if((NULL != result) && (NULL != area)) {
+        *area = result;
     }
-    return NULL;
+    EM_ASM_({console.log("TGETSTR",UTF8ToString($0),"=",
+       (0==$1)?"NULL":UTF8ToString($1));},id,result);
+    return result;
 }
 
 char *tgoto(char *cap, int col, int row) {
