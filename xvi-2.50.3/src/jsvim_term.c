@@ -187,7 +187,11 @@ char *tgetstr(char *id, char **area) {
     else if(strcmp("cr",id)==0) { result = strdup("\r"); }
     else if(strcmp("nd",id)==0) { result = strdup("\033[1C"); }
     else if(strcmp("ce",id)==0) { result = strdup("\033[K"); }
-    //TODO: else if(strcmp("cl",id)==0) { result = strdup("\033[K"); }
+    else if(strcmp("cl",id)==0) { result = strdup("\033[2J"); }
+    else if(strcmp("al",id)==0) { result = strdup("\033[1L"); }
+    else if(strcmp("dl",id)==0) { result = strdup("\033[1M"); }
+    else if(strcmp("ho",id)==0) { result = strdup("\033[H"); }
+    // TODO: now at `cs' capability
 
     if((NULL != result) && (NULL != area)) {
         *area = result;
@@ -198,7 +202,7 @@ char *tgetstr(char *id, char **area) {
 }
 
 char *tgoto(char *cap, int col, int row) {
-    EM_ASM_({console.log("tgoto cap,col,row",UTF8ToString($0),$1,$2);},cap,col,row);
+    //EM_ASM_({console.log("tgoto cap,col,row",UTF8ToString($0),$1,$2);},cap,col,row);
     sprintf(cap, "\033[<%d>;<%d>f", row, col);
     return cap;
 }
