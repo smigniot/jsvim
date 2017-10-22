@@ -372,9 +372,9 @@ jsvim_main_loop()
 	xvResponse	*resp;
 	register int	r;
 
-	EM_ASM_({console.log("JSVIM_MAIN_LOOP",$0);},0);
+	//EM_ASM_({console.log("JSVIM_MAIN_LOOP",$0);},0);
 	r = inch(jsvim_global_context.timeout);
-	EM_ASM_({console.log("DBG2",$0);},0);
+	//EM_ASM_({console.log("DBG2",$0);},0);
 	if (r == EOF) {
 	    if (kbdintr) {
 		event.ev_type = Ev_breakin;
@@ -411,16 +411,16 @@ jsvim_main_loop()
 	    event.ev_type = Ev_char;
 	    event.ev_inchar = r;
 	}
-        EM_ASM_({console.log("DBG3",$0);},0);
+        //EM_ASM_({console.log("DBG3",$0);},0);
 
         //EM_ASM_({console.log("EVENT",$0);},0);
 	resp = xvi_handle_event(&event);
 	if (resp->xvr_type == Xvr_exit) {
 	    sys_exit(resp->xvr_status);
 	}
-        EM_ASM_({console.log("DBG4",$0);},0);
+        //EM_ASM_({console.log("DBG4",$0);},0);
 	jsvim_global_context.timeout = resp->xvr_timeout;
-        EM_ASM_({console.log("DBG5",$0);},0);
+        //EM_ASM_({console.log("DBG5",$0);},0);
 }
 
 /*ARGSUSED*/

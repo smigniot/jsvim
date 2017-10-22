@@ -202,7 +202,6 @@ char *tgetstr(char *id, char **area) {
 }
 
 char *tgoto(char *cap, int col, int row) {
-    //EM_ASM_({console.log("tgoto cap,col,row",UTF8ToString($0),$1,$2);},cap,col,row);
     sprintf(cap, "\033[<%d>;<%d>f", row, col);
     return cap;
 }

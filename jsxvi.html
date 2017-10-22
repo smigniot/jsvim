@@ -10,22 +10,50 @@
 </script>
 <script type="text/javascript" src="jsvim_term.js">
 </script>
+<script type='text/javascript'>
+var Module = {
+    charIn: function(c){},
+    preRun: [],
+    postRun: [(function(){
+        var dbg = document.querySelector("debug");
+        function mainloop() {
+            _jsvim_main_loop();
+            setTimeout(mainloop, 50);
+            debug.textContent = new Date();
+        }
+        mainloop();
+    })],
+    print: (function() {
+        return function(text) {
+            console.log("OUT", text);
+            if (arguments.length > 1)
+                text = Array.prototype.slice.call(arguments).join(' ');
+        };
+    })(),
+    printErr: (function() {
+        return function(text) {
+            console.log("ERR", text);
+            if (arguments.length > 1)
+                text = Array.prototype.slice.call(arguments).join(' ');
+        };
+    })(),
+    canvas: (function() {}),
+    setStatus: function(text) {},
+    totalDependencies: 0,
+    monitorRunDependencies: function(left) {},
+}
+</script>
 <script type="text/javascript" src="xvi.js">
 </script>
 <style type="text/css">
 html,body { width:100%; height:100%; margin:0; padding:0; }
 body { background: linear-gradient(#80acaf, #dbe6e8); }
-#terminal-popup { position:fixed; top:35px; left:100px; width:400px;height:230px; }
-#debug { display:block; position:fixed; bottom:3px; right: 3px; opacity:0.1; max-height: 24px; 
-max-width: 256px; }
-#debug:hover { opacity:1; max-height: 512px; max-width:512px; z-index:255;}
 </style>
 </head>
 <body>
 
-<zion-caret id="caret" style="position:absolute;"></zion-caret>
-<zion-terminal id="jsvim" tabindex="0">
-</zion-terminal>
+<zion-terminal id="jsvim" tabindex="0"><zion-caret id="caret" style="position:absolute;"></zion-caret></zion-terminal>
+<footer id="debug" style="position:fixed;bottom:0;right:0;"></footer>
 
 </body>
 </html>

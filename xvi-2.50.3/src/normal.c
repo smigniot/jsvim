@@ -22,6 +22,7 @@
 
 #include "xvi.h"
 #include "cmd.h"
+#include <emscripten.h> 
 
 static	bool_t	HandleCommand P((Cmd *));
 static	void	HandleOperator P((Cmd *));
@@ -117,10 +118,12 @@ register int	c;
 	cmd->cmd_two_char = FALSE;
     } else {
 
+	if(c) { EM_ASM_({console.log("OUT21",$0);},c); }
 	cmd->cmd_ch1 = c;
 	cmd->cmd_ch2 = '\0';
 
 	if (CFLAGS(cmd->cmd_ch1) & TWO_CHAR) {
+	    if(c) { EM_ASM_({console.log("OUT23",$0);},c); }
 	    /*
 	     * It's the start of a two-character command. So wait
 	     * until we get the second character before proceeding.
@@ -131,6 +134,7 @@ register int	c;
 		cmd->cmd_opnum = cmd->cmd_prenum;
 		cmd->cmd_prenum = 0;
 	    }
+	    if(c) { EM_ASM_({console.log("OUT24",$0);},c); }
 	    return(FALSE);
 	}
 
@@ -142,10 +146,12 @@ register int	c;
 	 * cmd_ch1 will never == NOP.
 	 */
 	if (/*cmd->cmd_operator != NOP &&*/ cmd->cmd_operator == cmd->cmd_ch1) {
+	    if(c) { EM_ASM_({console.log("OUT25",$0);},c); }
 	    cmd->cmd_ch1 = '_';
 	}
     }
 
+    if(c) { EM_ASM_({console.log("OUT26",$0,$1,$2);},c,cmd->cmd_ch1,cmd->cmd_ch2); }
     return(HandleCommand(cmd));
 }
 
@@ -156,6 +162,7 @@ Cmd	*cmd;
     cmd->cmd_flags = CFLAGS(cmd->cmd_ch1);
 
     if ((cmd->cmd_flags & COMMAND) == 0) {
+	EM_ASM_({console.log("OUT27",$0,$1);},cmd->cmd_ch1,cmd->cmd_ch2);
 	cmd->cmd_operator = NOP;
 	cmd->cmd_prenum = 0;
 	beep();
@@ -163,6 +170,7 @@ Cmd	*cmd;
     }
 
     if (cmd->cmd_flags & TARGET) {
+	//EM_ASM_({console.log("OUT28",$0,$1);},cmd->cmd_ch1,cmd->cmd_ch2);
 
 	/*
 	 * Exceptional cases are the yl and dl commands when the cursor is
@@ -236,6 +244,7 @@ Cmd	*cmd;
 	 * case where an operator is being used.
 	 */
 	if (cmd->cmd_operator != NOP) {
+	    EM_ASM_({console.log("OUT22",$0);},cmd->cmd_ch2);
 	    HandleOperator(cmd);
 	} else {
 	    move_cursor(cmd->cmd_target.p_line,
@@ -243,6 +252,7 @@ Cmd	*cmd;
 	}
 
     } else {
+	EM_ASM_({console.log("OUT29",$0,$1);},cmd->cmd_ch1,cmd->cmd_ch2);
 	/*
 	 * A command that does something.
 	 * Since it isn't a target, no operators need apply.
@@ -253,9 +263,11 @@ Cmd	*cmd;
 	    return(FALSE);
 	}
 
+	EM_ASM_({console.log("OUT210",$0,$1);},cmd->cmd_ch1,cmd->cmd_ch2);
 	(*CFUNC(cmd->cmd_ch1))(cmd);
     }
 
+    //EM_ASM_({console.log("OUT211",$0,$1);},cmd->cmd_ch1,cmd->cmd_ch2);
     cmd->cmd_prenum = 0;
     return(TRUE);
 }

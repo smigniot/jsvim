@@ -288,7 +288,7 @@ long	timeout;
      * Note that if this happens, we don't call flush_output().
      */
     if (kb_nchars > 0) {
-        EM_ASM_({console.log("KBGETC1",$0);},0);
+        //EM_ASM_({console.log("KBGETC1",$0);},0);
 	return(kbgetc());
     }
 
@@ -299,7 +299,7 @@ long	timeout;
 
     if (timeout != 0) {
 	current_timeout = timeout;
-        EM_ASM_({console.log("KBGETC2",$0);},0);
+        //EM_ASM_({console.log("KBGETC2",$0);},0);
 	c = kbgetc();
 	current_timeout = DEF_TIMEOUT;
 	return(c);
@@ -310,7 +310,7 @@ long	timeout;
      * or we are interrupted.
      */
 
-    EM_ASM_({console.log("KBGETC3",$0);},0);
+    //EM_ASM_({console.log("KBGETC3",$0);},0);
     return(kbgetc());
 }
 
