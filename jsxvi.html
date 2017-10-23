@@ -11,15 +11,29 @@
 <script type="text/javascript" src="jsvim_term.js">
 </script>
 <script type='text/javascript'>
+
+function vim_charIn(c) {
+    var text = document.createTextNode(str);
+    if(caret)  { term.insertBefore(text, caret);  }
+    else       { term.appendChild(text);          }
+    console.log("STDOUT", c, String.fromCharCode(c));
+}
 var Module = {
-    charIn: function(c){},
-    preRun: [],
+    charIn: vim_charIn,
+    preRun: [(function(){
+        // init: function(input, output, error)
+        FS.init(function() {
+            throw new Error("Input asked");
+        }, vim_charIn, function(c) {
+            console.log("STDERR", c, String.fromCharCode(c));
+        });
+    })],
     postRun: [(function(){
-        var dbg = document.querySelector("debug");
+        var debug = document.querySelector("debug");
         function mainloop() {
-            _jsvim_main_loop();
+            Module.ccall("jsvim_main_loop");
+            if(debug) { debug.textContent = new Date(); }
             setTimeout(mainloop, 50);
-            debug.textContent = new Date();
         }
         mainloop();
     })],

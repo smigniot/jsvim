@@ -22,7 +22,6 @@
 ***/
 
 #include "xvi.h"
-#include <emscripten.h> 
 
 void
 do_cmd(cmd)
@@ -536,7 +535,6 @@ void
 do_ins(cmd)
 Cmd	*cmd;
 {
-	EM_ASM_({console.log("DO_INS",$0,$1);},cmd->cmd_ch1,cmd->cmd_ch2);
     bool_t	startpos = TRUE;	/* FALSE means start position moved */
 
     if (!start_command()) {

@@ -110,6 +110,31 @@ ZionTerminal.caretUp = function() {
         }
     }
 };
+ZionTerminal.moveTo = function(row,col) {
+    var caret = this.safeCaret();
+    var lines = this.textContent.split(/\n/);
+    if(lines.length <= row) {
+        this.appendChild(document.createTextNode(
+            new Array(row-lines.length+2).join("\n"))); 
+        // 2,2 => new Array(2).join("\n") => "\n" //
+    }
+    lines = this.textContent.split(/\n/);
+    // TOTO
+    // TUTU // line 1, in goto 1,4
+    // TITI
+    // TATA
+    var before = lines.slice(0,row).join("\n"); // TOTO
+    var after = lines.slice(row+1).join("\n");  // TITI\nTATA
+    var current = lines[row];
+    var cbefore = current.slice(0,col);
+    var cafter = current.slice(col);
+    // before+cbefore+caret+cafter+after;
+    [].slice.call(this.querySelectorAll("*")).forEach(function(n) {
+        n && n.parentNode && (n != caret.caret) && n.parentNode.removeChild(n);
+    });
+    this.insertBefore(document.createTextNode([before,cbefore].join("\n")), caret.caret);
+    this.appendChild(document.createTextNode([cafter,after].join("\n")));
+}
 ZionTerminal.caretDown = function() {
     var caret = this.safeCaret();
     if(caret && caret.after) {

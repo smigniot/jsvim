@@ -21,41 +21,47 @@ function vim_tgetnum(id) {
  * value from tparm, tgetstr, or tgoto. affcnt is the number of lines 
  * affected, or 1 if not applicable.
  */
-function vim_tputs(str, affcnt) {
+function vim_tputs(str, affcnt, putc) {
     var term = document.body.querySelector("zion-terminal"),
         caret = term && term.querySelector("zion-caret")
         ;
 
     var m = null;
+    /*
+    "\b"
+    "\033[1A"
+    "\033[1B"
+    "\r"
+    "\033[1C"
+    "\033[K"
+    "\033[2J"
+    "\033[1L"
+    "\033[1M"
+    "\033[H"
+    */
     if(m = /^\033\[<(\d+)>;<(\d+)>f$/.exec(str)) {
         var row = +(m[1]),
             col = +(m[2])
             ;
-        console.log("Move cursor", row, col);
-        /*
-        "\b"
-        "\033[1A"
-        "\033[1B"
-        "\r"
-        "\033[1C"
-        "\033[K"
-        "\033[2J"
-        "\033[1L"
-        "\033[1M"
-        "\033[H"
-        */
+        console.log("TPUTS(move "+row+" "+col+")", str, affcnt, putc);
+        term && term.moveTo(row, col);
     } else if(m = /^\033\[2J$/.exec(str)) {
+        console.log("TPUTS(clear screen)", str, affcnt, putc);
         // FIXME: use scroll region
         term && [].slice.call(term.querySelectorAll("*")).forEach(function(n) {
             n && n.parentNode && (n != caret) && n.parentNode.removeChild(n);
         });
+    } else if(m = /^\033\[1B$/.exec(str)) {
+        console.log("TPUTS(down 1 line)", str, affcnt, putc);
+        term && term.caretDown();
     } else {
         console.log("UNHANDLED TPUTS", str, affcnt);
-        alert("WEIRD TPUTS");
+        //alert("WEIRD TPUTS");
         var text = document.createTextNode(str);
         if(caret)  { term.insertBefore(text, caret);  }
         else       { term.appendChild(text);          }
     }
+    return 1;
 }
 
 function vim_kbgetc() {

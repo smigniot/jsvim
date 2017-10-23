@@ -158,7 +158,7 @@ int terminfo_linux_len = 1794;
 
 
 int tputs(const char *str, int affcnt, int (*putc)(int)) {
-    return EM_ASM_INT({return vim_tputs(UTF8ToString($0),$1)},str,affcnt);
+    return EM_ASM_INT({return vim_tputs(UTF8ToString($0),$1,$2)},str,affcnt,putc);
 }
 
 int tgetflag(char *id) {
@@ -173,7 +173,7 @@ int tgetent(char *bp, const char *name) {
 
 int tgetnum(char *id) {
     int c = EM_ASM_INT({return vim_tgetnum(UTF8ToString($0))},id);
-    EM_ASM_({console.log("TGETNUM",UTF8ToString($0),"=",$1);},id,c);
+    //EM_ASM_({console.log("TGETNUM",UTF8ToString($0),"=",$1);},id,c);
     return c;
 }
 
@@ -196,8 +196,7 @@ char *tgetstr(char *id, char **area) {
     if((NULL != result) && (NULL != area)) {
         *area = result;
     }
-    EM_ASM_({console.log("TGETSTR",UTF8ToString($0),"=",
-       (0==$1)?"NULL":UTF8ToString($1));},id,result);
+    //EM_ASM_({console.log("TGETSTR",UTF8ToString($0),"=", (0==$1)?"NULL":UTF8ToString($1));},id,result);
     return result;
 }
 
@@ -211,4 +210,5 @@ kbgetc()
 {
     return EM_ASM_INT({return vim_kbgetc($0)},0);
 }
+
 

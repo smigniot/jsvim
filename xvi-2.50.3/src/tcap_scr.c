@@ -56,9 +56,9 @@
 ***/
 
 // JSVIM
+#include "jsvim_term.h"
 #include "jsvim_types.h"
 #include <emscripten.h> 
-
 
 #ifdef AIX
 #include <curses.h>
@@ -394,6 +394,7 @@ jsvim_main_loop()
 
 		getScreenSize(&new_rows, &new_cols);
 		if (new_rows != 0 && new_cols != 0) {
+            EM_ASM_({console.log("NEWSIZE",$0,$1);},new_rows,new_cols);
 		    event.ev_type = Ev_resize;
 		    event.ev_rows = new_rows - vs->pv_rows;
 		    event.ev_columns = new_cols - vs->pv_cols;
@@ -411,9 +412,6 @@ jsvim_main_loop()
 	    event.ev_type = Ev_char;
 	    event.ev_inchar = r;
 	}
-        //EM_ASM_({console.log("DBG3",$0);},0);
-
-        //EM_ASM_({console.log("EVENT",$0);},0);
 	resp = xvi_handle_event(&event);
 	if (resp->xvr_type == Xvr_exit) {
 	    sys_exit(resp->xvr_status);
@@ -1651,7 +1649,17 @@ bool_t	doit;
 {
     if (CM != NULL) {
 	cost = 0;	/* the global one */
-	tputs(tgoto(CM, virt_col, virt_row), (int)LI, doit ? foutch : inc_cost);
+    //EM_ASM_({console.log("CM_ABS TPUT",$0,$1,$2,$3);},virt_col, virt_row, (int)LI, doit?1:0);
+    if(doit) {
+        // JSVIM: only operate when doit
+        tputs(tgoto(CM, virt_col, virt_row), (int)LI, doit ? foutch : inc_cost);
+    } else {
+        /* 
+         * "\033[<L>;<C>f"
+         * between 10 and 14
+         */
+        cost += strlen(tgoto(CM, virt_col, virt_row));
+    }
 	if (doit) {
 	    real_row = virt_row;
 	    real_col = virt_col;

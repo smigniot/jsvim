@@ -24,8 +24,7 @@ all:
 	@# overriding its OPTFLAG variable. Subvert it to set HELPFILE too.
 	(cd src && $(MAKE) -f makefile.pos \
 		OPTFLAG="$(OPTFLAG) -DHELPFILE=\\\"$(HELPDIR)/xvi.help\\\"" \
-		all)
-# JSVIM : replace xvi target by all target
+		xvi)
 
 check: all
 	@(cd test && make check)

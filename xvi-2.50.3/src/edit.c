@@ -20,7 +20,6 @@
 ***/
 
 #include "xvi.h"
-#include <emscripten.h> 
 
 /*
  *	Global variables

@@ -1,5 +1,5 @@
 all:
-	(cd xvi-2.50.3 && $(MAKE) \
+	(cd xvi-2.50.3/src && $(MAKE) -f makefile.pos \
 		all)
 
 clean:

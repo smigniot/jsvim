@@ -62,13 +62,10 @@ GENOBJ=		alloc.o altstack.o ascii.o buffers.o \
 		version.o vi_cmds.o vi_ops.o virtscr.o \
 		windows.o yankput.o
 
-all:		xvi xvi.html work.html
+all:		xvi xvi.html
 
 xvi.html:		$(GENOBJ) $(MACHOBJ)
 		emcc -s EXPORTED_FUNCTIONS="['_main','_jsvim_main_loop']" -s ASSERTIONS=1 -s NO_EXIT_RUNTIME=1 $(CFLAGS) $(LDFLAGS) -o xvi.html $(GENOBJ) $(MACHOBJ) $(LIBS)
-
-work.html: xvi.html
-		cat xvi.html | sed 's/<head>/&<script type="text\/javascript" src="jsvim_term.js"><\/script>/' > work.html
 
 xvi:		$(GENOBJ) $(MACHOBJ)
 		$(CC) $(CFLAGS) $(LDFLAGS) -o xvi $(GENOBJ) $(MACHOBJ) $(LIBS)

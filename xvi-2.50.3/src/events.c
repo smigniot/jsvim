@@ -21,7 +21,6 @@
 ***/
 
 #include "xvi.h"
-#include <emscripten.h> 
 
 static	bool_t	n_proc P((int));
 static	bool_t	c_proc P((int));
@@ -150,11 +149,6 @@ xvEvent	*ev;
      */
     do_update = FALSE;
     while ((c = map_getc()) != EOF) {
-        if(c != 0) {
-	    EM_ASM_({console.log("OUT1",$0,$1);},c,State);
-	    // 0:NORMAL, 1:SUBNORMAL, 4:CMDLINE,
-	    // 5:DISPLAY, 2:INSERT, 3:REPLACE
-        }
 	bool_t	(*func)P((int));
 
 	switch (State) {
@@ -182,13 +176,7 @@ xvEvent	*ev;
 	default: /* EXITING */
 	    break;
 	}
-	if(c != 0) {
-	    EM_ASM_({console.log("OUT2",$0,$1);},c,State);
-	}
 	if (State != EXITING && (*func)(c)) {
-	    if(c != 0) {
-		EM_ASM_({console.log("OUT3",$0,$1);},c,State);
-	    }
 	    do_update = TRUE;
 	}
 

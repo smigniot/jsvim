@@ -184,8 +184,7 @@ static	Termstate	cooked_state, raw_state;
  */
 #ifndef AIX
 short		ospeed = 19200;			/* JSVIM: max legal as short */
-// JSVIM
-// extern short		ospeed;			/* tty's baud rate */
+// JSVIM extern short		ospeed;			/* tty's baud rate */
 #endif
 
 /*
@@ -240,23 +239,19 @@ old_kbgetc() // JSVIM: tampering with kbgetc
         while (1) {
 	    tv.tv_sec = (long) (current_timeout / 1000);
 	    tv.tv_usec = ((long) current_timeout * 1000) % (long) 1000000;
-            EM_ASM_({console.log("SELECT1",$0);},0);
             retval = select(1, &rfds, NULL, NULL, &tv);
-            EM_ASM_({console.log("SELECT2",$0);},0);
             if (retval > 0)
                  break;
             if (retval == 0 || kbdintr)
                 return EOF;
         }
 
-        EM_ASM_({console.log("READ3",$0);},0);
 	if ((nread = read(0, (char *) kbuf, sizeof kbuf)) <= 0) {
 	    return EOF;
 	} else {
 	    kb_nchars = nread;
 	    kbp = kbuf;
 	}
-        EM_ASM_({console.log("READ4",$0);},0);
     }
     if (win_size_changed) {
 	/*
@@ -288,7 +283,6 @@ long	timeout;
      * Note that if this happens, we don't call flush_output().
      */
     if (kb_nchars > 0) {
-        //EM_ASM_({console.log("KBGETC1",$0);},0);
 	return(kbgetc());
     }
 
@@ -299,7 +293,6 @@ long	timeout;
 
     if (timeout != 0) {
 	current_timeout = timeout;
-        //EM_ASM_({console.log("KBGETC2",$0);},0);
 	c = kbgetc();
 	current_timeout = DEF_TIMEOUT;
 	return(c);
@@ -310,7 +303,6 @@ long	timeout;
      * or we are interrupted.
      */
 
-    //EM_ASM_({console.log("KBGETC3",$0);},0);
     return(kbgetc());
 }
 
