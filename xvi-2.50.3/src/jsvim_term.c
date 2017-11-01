@@ -159,7 +159,7 @@ int terminfo_linux_len = 1794;
 
 int tputs(const char *str, int affcnt, int (*putc)(int)) {
     const char *p = str;
-    EM_ASM_({console.log("TPUTS",UTF8ToString($0),$1,$2);},str, affcnt, putc);
+    //EM_ASM_({console.log("TPUTS",UTF8ToString($0),$1,$2);},str, affcnt, putc);
     while(*p) {
         putc(*p);
         p++;

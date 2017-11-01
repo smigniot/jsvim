@@ -12,18 +12,49 @@
 </script>
 <script type='text/javascript'>
 
-var rollingin = [];
+var ansiescape = [];
 function vim_charIn(c) {
-    //console.log("vimcharin", c, String.fromCharCode(c));
-    document.querySelector("zion-terminal").appendChild(
-        document.createTextNode(String.fromCharCode(c)));
-
-    rollingin.push(String.fromCharCode(c));
-    if(rollingin.length > 32) {
-        rollingin.splice(0,rollingin.length-32);
+    try {
+        unsafe_vim_charIn(c);
+    } catch(err) {
+        console.log("CHARINERR", c, err);
     }
-    console.log("Chars", rollingin.join(""));
-
+}
+function unsafe_vim_charIn(c) {
+    //console.log("vimcharin", c, String.fromCharCode(c));
+    var term = document.querySelector("zion-terminal"),
+        caret = term.safeCaret()
+        ;
+    if(c == 27) {
+        ansiescape = [27];
+    } else if(ansiescape.length) {
+        ansiescape.push(c);
+        var sequence = ansiescape.map(function(e){
+            return String.fromCharCode(e)}).join("");
+        var handled = true, m;
+        if(sequence == "\033[2J") {
+            caret.before.deleteData(0, caret.before.length);
+            caret.after.deleteData(0, caret.after.length);
+        } else if(m = sequence.match(/^\033\[<(\d+)>;<(\d+)>f$/)) {
+            var row = +(m[1]),
+                col = +(m[2]);
+            term.moveTo(row,col);
+            //console.log("MOVE", row, col);
+        } else if(sequence == "\033[1B") {
+            term.caretDown();
+            console.log("DOWN");
+        } else {
+            handled = false;
+            console.log("PENDING", sequence);
+        }
+        if(handled) {
+            ansiescape = [];
+        }
+    } else {
+        console.log("INSERT", String.fromCharCode(c));
+        caret.before.appendData(String.fromCharCode(c));
+    }
+    //console.log("vimcharin 2", c, String.fromCharCode(c));
     /*
     var text = document.createTextNode(str);
     if(caret)  { term.insertBefore(text, caret);  }

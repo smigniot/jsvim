@@ -11,7 +11,7 @@ function vim_tgetnum(id) {
             caret = term && term.querySelector("zion-caret"),
             dim = function(e) { return getComputedStyle(e).height.replace(/px$/,"") }
             ;
-        return term && Math.floor(dim(term)/dim(caret)) || 25;
+        return term && Math.floor(dim(term)/dim(caret)-2) || 25;
     }
     return 0;
 }
