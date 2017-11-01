@@ -12,18 +12,32 @@
 </script>
 <script type='text/javascript'>
 
+var rollingin = [];
 function vim_charIn(c) {
+    //console.log("vimcharin", c, String.fromCharCode(c));
+    document.querySelector("zion-terminal").appendChild(
+        document.createTextNode(String.fromCharCode(c)));
+
+    rollingin.push(String.fromCharCode(c));
+    if(rollingin.length > 32) {
+        rollingin.splice(0,rollingin.length-32);
+    }
+    console.log("Chars", rollingin.join(""));
+
+    /*
     var text = document.createTextNode(str);
     if(caret)  { term.insertBefore(text, caret);  }
     else       { term.appendChild(text);          }
     console.log("STDOUT", c, String.fromCharCode(c));
+    */
 }
 var Module = {
     charIn: vim_charIn,
     preRun: [(function(){
         // init: function(input, output, error)
         FS.init(function() {
-            throw new Error("Input asked");
+            //throw new Error("Input asked");
+            return null;
         }, vim_charIn, function(c) {
             console.log("STDERR", c, String.fromCharCode(c));
         });
@@ -37,20 +51,16 @@ var Module = {
         }
         mainloop();
     })],
-    print: (function() {
-        return function(text) {
-            console.log("OUT", text);
-            if (arguments.length > 1)
-                text = Array.prototype.slice.call(arguments).join(' ');
-        };
-    })(),
-    printErr: (function() {
-        return function(text) {
-            console.log("ERR", text);
-            if (arguments.length > 1)
-                text = Array.prototype.slice.call(arguments).join(' ');
-        };
-    })(),
+    print: (function(text) {
+        console.log("STDOUT", text);
+        if (arguments.length > 1)
+            text = Array.prototype.slice.call(arguments).join(' ');
+    }),
+    printErr: (function(text) {
+        console.log("STDERR", text);
+        if (arguments.length > 1)
+            text = Array.prototype.slice.call(arguments).join(' ');
+    }),
     canvas: (function() {}),
     setStatus: function(text) {},
     totalDependencies: 0,

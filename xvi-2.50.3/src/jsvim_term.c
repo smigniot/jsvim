@@ -158,7 +158,17 @@ int terminfo_linux_len = 1794;
 
 
 int tputs(const char *str, int affcnt, int (*putc)(int)) {
+    const char *p = str;
+    EM_ASM_({console.log("TPUTS",UTF8ToString($0),$1,$2);},str, affcnt, putc);
+    while(*p) {
+        putc(*p);
+        p++;
+    }
+    return 1;
+    /*
+    //printf(str);
     return EM_ASM_INT({return vim_tputs(UTF8ToString($0),$1,$2)},str,affcnt,putc);
+    */
 }
 
 int tgetflag(char *id) {
