@@ -53,6 +53,9 @@ function unsafe_vim_charIn(c) {
     } else {
         console.log("INSERT", String.fromCharCode(c));
         caret.before.appendData(String.fromCharCode(c));
+        if((caret.after.length) && (!(caret.after.textContent.match(/^\n/)))) {
+            caret.after.deleteData(0,1);
+        }
     }
     //console.log("vimcharin 2", c, String.fromCharCode(c));
     /*
