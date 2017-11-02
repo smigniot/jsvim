@@ -26,7 +26,20 @@ function unsafe_vim_charIn(c) {
         caret = term.safeCaret()
         ;
     if(c == 27) {
+        if(ansiescape.length) {
+            console.log("Missed", ansiescape.slice());
+            alert("ANSI escape sequence missed : eratic behavior ahead");
+        }
         ansiescape = [27];
+    } else if(c == 7) {
+        term.className = "";
+        term.className = "bell";
+        setTimeout(function() {
+            term.className = "";
+        },1200);
+        //term.caretLeft();
+    } else if(c == 8) {
+        //term.caretLeft();
     } else if(ansiescape.length) {
         ansiescape.push(c);
         var sequence = ansiescape.map(function(e){
@@ -40,12 +53,16 @@ function unsafe_vim_charIn(c) {
                 col = +(m[2]);
             term.moveTo(row,col);
             //console.log("MOVE", row, col);
+        } else if(sequence == "\033[1A") {
+            term.caretUp();
         } else if(sequence == "\033[1B") {
             term.caretDown();
             console.log("DOWN");
+        } else if(sequence == "\033[K") {
+            term.deleteEOL();
         } else {
             handled = false;
-            console.log("PENDING", sequence);
+            //console.log("PENDING", sequence);
         }
         if(handled) {
             ansiescape = [];

@@ -206,7 +206,7 @@ char *tgetstr(char *id, char **area) {
     if((NULL != result) && (NULL != area)) {
         *area = result;
     }
-    //EM_ASM_({console.log("TGETSTR",UTF8ToString($0),"=", (0==$1)?"NULL":UTF8ToString($1));},id,result);
+    EM_ASM_({console.log("TGETSTR",UTF8ToString($0),"=", (0==$1)?"NULL":UTF8ToString($1));},id,result);
     return result;
 }
 

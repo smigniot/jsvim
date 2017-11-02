@@ -148,6 +148,16 @@ ZionTerminal.caretDown = function() {
         }
     }
 };
+ZionTerminal.deleteEOL = function() {
+    var caret = this.safeCaret();
+    if(caret && caret.after) {
+        var data = caret.after.data;
+        var i = data.indexOf("\n");
+        var index = (i==-1)?caret.after.length:i;
+        caret.after.deleteData(0, index);
+    }
+}
+
 var ZionTerminalElement = document.registerElement('zion-terminal', {
     'prototype': ZionTerminal,
 });
