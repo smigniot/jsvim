@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" type="text/css" href="static/xterm.css" />
+    <link rel="stylesheet" type="text/css" href="static/jsvim.css" />
+    <script type="text/javascript" src="static/xterm.js"></script>
+    <script type="text/javascript" src="static/jsvmain.js"></script>
+  </head>
+  <body onload="jsvimOnLoad()">
+
+    <div id="terminal-container"></div> 
+
+    <section id="tests" style="position: absolute; right:10px; top:0; font-family:monospace; font-size:8pt;">
+      <pre onclick="execPre(this)" style="margin:0;padding:0">
+echo "$(tput setaf 1)In red$(tput sgr0) and in normal color" | xxd
+00000000: 1b5b 3331 6d49 6e20 7265 641b 2842 1b5b  .[31mIn red.(B.[
+00000010: 6d20 616e 6420 696e 206e 6f72 6d61 6c20  m and in normal 
+00000020: 636f 6c6f 720a                           color.
+      </pre>
+      <pre onclick="execPre(this)" style="margin:0;padding:0">
+echo "Go fork yourself $(tput clear)Have a nice day" | xxd
+00000000: 476f 2066 6f72 6b20 796f 7572 7365 6c66  Go fork yourself
+00000010: 201b 5b48 1b5b 324a 4861 7665 2061 206e   .[H.[2JHave a n
+00000020: 6963 6520 6461 790a                      ice day.
+      </pre>
+      <pre onclick="execPre(this)" style="margin:0;padding:0">
+echo "Just saying something bad$(tput kbs)$(tput kbs)$(tput kbs)good...$(tput kbs)$(tput kbs)$(tput kbs)" | xxd
+00000000: 4a75 7374 2073 6179 696e 6720 736f 6d65  Just saying some
+00000010: 7468 696e 6720 6261 6408 0808 676f 6f64  thing bad...good
+00000020: 2e2e 2e08 0808 0a                        .......
+      </pre>
+      <pre onclick="execPre(this)" style="margin:0;padding:0">
+echo "Backspace does nothing$(tput kbs)$(tput kbs)$(tput kbs)$(tput kbs) erase, use '^H ^H'" | xxd
+00000000: 4261 636b 7370 6163 6520 646f 6573 206e  Backspace does n
+00000010: 6f74 6869 6e67 0808 0808 2065 7261 7365  othing.... erase
+00000020: 2c20 7573 6520 275e 4820 5e48 270a       , use '^H ^H'.
+      </pre>
+      <pre onclick="execPre(this)" style="margin:0;padding:0">
+echo "go f#####$(tput kbs)$(tput kbs)$(tput kbs)$(tput kbs)$(tput kbs)$(tput el)ree" | xxd
+00000000: 676f 2066 2323 2323 2308 0808 0808 1b5b  go f#####......[
+00000010: 4b72 6565 0a                             Kree.
+      </pre>
+    </section>
+
+  </body>
+</html>
+<!-- vim: set ts=2 sw=2 sts=2 expandtab foldmethod=marker : --> 
+

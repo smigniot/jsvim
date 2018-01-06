@@ -1,3 +1,5 @@
+=== Alternatives and related ===
+
 First to prevent [HolyWars](http://wiki.c2.com/?HolyWar) let me tell you what JSVim isn't.
 
 * It is not the [excellent packaging of vim made by Lu Wang](https://coolwanglu.github.io/vim.js/streamlinejs/vim.html) - wish it were
@@ -6,12 +8,11 @@ First to prevent [HolyWars](http://wiki.c2.com/?HolyWar) let me tell you what JS
 * It is not the quite minimal code spread [since decades](http://gpl.internetconnection.net/vi/)
 
 
-That said
+=== About ===
 
-JSVim, in its 4.0 version is an HTML5 CustomElement TextArea extension which aims at
-* Providing the full  [xvi runtime](http://martinwguy.github.io/xvi/) through Emscripten - merely done
-* Provide a TERM implementation in CustomElement compatible with HTML5 capabilities - fighting for it
-* Stay Small ! - NonArguableMatter
-
+JSVim, in its 5.0 version is the combination of
+* The xterm.js library - https://xtermjs.org
+* The full  [xvi runtime](http://martinwguy.github.io/xvi/)
+* With a minimal footprint
 
 
