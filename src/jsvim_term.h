@@ -1,5 +1,6 @@
 #ifndef ERR
-# define ERR (-1)
+# define ERR 0
+//# define ERR (-1)
 #endif
 
 #ifndef JSVIM_TERM_H

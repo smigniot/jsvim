@@ -358,7 +358,6 @@ jsvim_main_loop()
 
 	//EM_ASM_({console.log("JSVIM_MAIN_LOOP",$0);},0);
 	r = inch(jsvim_global_context.timeout);
-	//EM_ASM_({console.log("DBG2",$0);},0);
 	if (r == EOF) {
 	    if (kbdintr) {
 		event.ev_type = Ev_breakin;
@@ -870,12 +869,13 @@ unsigned int	*pcolumns;
     char	*strp = strings;	/* ptr to space left in strings */
     char	*cp;			/* temp for single char strings */
     int	i;
+    char	*justguessing;		/* terminal type */
 
     termtype = getenv("TERM");
     if (termtype == NULL || *termtype == '\0') {
-	termtype = "ansi";
+        termtype = "ansi";
     }
-    EM_ASM_({console.log("TTY_OPEN",UTF8ToString($0));},termtype);
+    EM_ASM_({console.log("TERM = ["+UTF8ToString($0)+"]");}, termtype);
 
     switch (tgetent(tcbuf, termtype)) {
     case -1:
@@ -896,8 +896,9 @@ unsigned int	*pcolumns;
      * Standout glitch: number of spaces left when entering or leaving
      * standout mode. Xvi cannot function on such terminals.
      */
-    if (tgetnum("sg") > 0) {
-	fail("xvi doesn't work on terminals with the standout glitch.");
+    int tgnsg = tgetnum("sg");
+    if (tgnsg > 0) {
+        fail("xvi doesn't work on terminals with the standout glitch.");
     }
 
     /*
@@ -947,6 +948,7 @@ unsigned int	*pcolumns;
     if (cp != NULL)
 	PC = *cp;
 #endif
+
     /*
      * Find the backspace character.
      *
@@ -1102,7 +1104,7 @@ unsigned int	*pcolumns;
 	    xvi_keymap(lhs, keys[i].key_rhs);
 	}
     }
-    EM_ASM_({console.log("TTY_OPEN done",UTF8ToString($0));},termtype);
+    EM_ASM_({console.log("TTY_OPEN done",Pointer_stringify($0));},termtype);
 }
 
 /*

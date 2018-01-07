@@ -21,7 +21,7 @@
 
 #include "xvi.h"
 
-extern	int	tcap_scr_main P((int, char **));
+extern	void	tcap_scr_main P((int, char **));
 
 int
 main(argc, argv)

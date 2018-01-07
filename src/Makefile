@@ -25,7 +25,8 @@ LIBS=
 LDFLAGS=
 
 DEBUGFLAG=	-g
-OPTFLAG=	-O
+#OPTFLAG=	-O
+OPTFLAG=
 CFLAGS= 	$(SYSDEFS) $(INCDIRS) $(OPTFLAG)
 
 LINTFLAGS=	$(SYSDEFS) $(INCDIRS) -ah
@@ -64,7 +65,8 @@ GENOBJ=		alloc.o altstack.o ascii.o buffers.o \
 all:		xvi xvi.html
 
 xvi.html:		$(GENOBJ) $(MACHOBJ)
-		emcc -s EXPORTED_FUNCTIONS="['_main','_jsvim_main_loop']" -s ASSERTIONS=1 -s NO_EXIT_RUNTIME=1 $(CFLAGS) $(LDFLAGS) -o xvi.html $(GENOBJ) $(MACHOBJ) $(LIBS)
+		#emcc -s EXPORTED_FUNCTIONS="['_main','_jsvim_main_loop']" -s ASSERTIONS=1 -s NO_EXIT_RUNTIME=1 $(CFLAGS) $(LDFLAGS) -o xvi.html $(GENOBJ) $(MACHOBJ) $(LIBS)
+		emcc -s EXPORTED_FUNCTIONS="['_main','_jsvim_main_loop']" -s NO_EXIT_RUNTIME=1 $(CFLAGS) $(LDFLAGS) -o xvi.html $(GENOBJ) $(MACHOBJ) $(LIBS)
 
 xvi:		$(GENOBJ) $(MACHOBJ)
 		$(CC) $(CFLAGS) $(LDFLAGS) -o xvi $(GENOBJ) $(MACHOBJ) $(LIBS)

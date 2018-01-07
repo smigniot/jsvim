@@ -159,7 +159,7 @@ int terminfo_linux_len = 1794;
 
 int tputs(const char *str, int affcnt, int (*putc)(int)) {
     const char *p = str;
-    //EM_ASM_({console.log("TPUTS",UTF8ToString($0),$1,$2);},str, affcnt, putc);
+    EM_ASM_({console.log("TPUTS",UTF8ToString($0),$1,$2);},str, affcnt, putc);
     while(*p) {
         putc(*p);
         p++;
@@ -182,9 +182,15 @@ int tgetent(char *bp, const char *name) {
 }
 
 int tgetnum(char *id) {
-    int c = EM_ASM_INT({return vim_tgetnum(UTF8ToString($0))},id);
-    //EM_ASM_({console.log("TGETNUM",UTF8ToString($0),"=",$1);},id,c);
-    return c;
+    if(strcmp(id,"li")==0) { 
+        return 24; 
+    } else if(strcmp(id,"co")==0) {
+        return 80;
+    } else if(strcmp(id,"sg")==0) {
+        return -1;
+    } else {
+        return 0;
+    }
 }
 
 
@@ -211,7 +217,7 @@ char *tgetstr(char *id, char **area) {
 }
 
 char *tgoto(char *cap, int col, int row) {
-    sprintf(cap, "\033[<%d>;<%d>f", row, col);
+    sprintf(cap, "\033[%d;%df", row, col);
     return cap;
 }
 

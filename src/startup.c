@@ -357,7 +357,8 @@ char	*envp;				/* init string from the environment */
      * It doesn't make sense to do this until we have a value for
      * Pn(P_colour).
      */
-    xvClear(curwin->w_vs);
+    //xvClear(curwin->w_vs);
+    xvClear();
 
     if (numfiles != 0) {
 	if (line == 0 && pat == NULL) {
