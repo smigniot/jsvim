@@ -207,7 +207,9 @@ char *tgetstr(char *id, char **area) {
     else if(strcmp("al",id)==0) { result = strdup("\033[1L"); }
     else if(strcmp("dl",id)==0) { result = strdup("\033[1M"); }
     else if(strcmp("ho",id)==0) { result = strdup("\033[H"); }
+    else if(strcmp("cs",id)==0) { result = strdup("\033[%i%p1%d;%p2%dr"); }
     // TODO: now at `cs' capability
+    // man terminfo
 
     if((NULL != result) && (NULL != area)) {
         *area = result;
