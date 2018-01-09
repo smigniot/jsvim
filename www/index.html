@@ -11,7 +11,7 @@
     function vim_getColumns() { return 80; }
     function vim_getRows() { return 24; }
     function vim_charIn(c) {
-      console.log("OUT",c);
+      //console.log("OUT",c);
       document.querySelector("#terminal-container").term.write(String.fromCharCode(c));
     }
 
