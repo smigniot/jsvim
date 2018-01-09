@@ -21,6 +21,15 @@
     }
     function vim_tgetflag(name) {
       console.log("vim_tgetflag(",name,")");
+      //auto_right_margin         am    am    terminal has automatic
+      //margins
+      if(name == "am") return 0; // No terminal auto-wrap at end of line
+      //eat_newline_glitch        xenl  xn    newline ignored
+      //after 80 cols (concept)
+      if(name == "xn") return 0; // Never ignore newlines, even after 80col
+      //move_standout_mode        msgr  ms    safe to move while
+      //in standout mode
+      if(name == "ms") return 1; // Safe to move
       return 0;
     }
     function vim_kbgetc() {

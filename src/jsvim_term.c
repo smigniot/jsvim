@@ -213,11 +213,12 @@ char *tgetstr(char *id, char **area) {
     else if(strcmp("ho",id)==0) { result = strdup("\033[H"); }
     else if(strcmp("cs",id)==0) { result = strdup("\033[%i%p1%d;%p2%dr"); }
     else if(strcmp("sf",id)==0) { result = strdup("\n"); }
-    else if(strcmp("sr",id)==0) { result = strdup((unsigned char[]){0x1B,0x4D}); }
+    else if(strcmp("sr",id)==0) { result = strdup((unsigned char[]){ 0x1B,0x4D }); }
     else if(strcmp("SF",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x25,0x70,0x31,0x25,0x64,0x53 }); }
     else if(strcmp("SR",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x25,0x70,0x31,0x25,0x64,0x54 }); }
-    // TODO: now at `cs' capability
-    // man terminfo
+    else if(strcmp("mr",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x37,0x6d }); }
+    else if(strcmp("md",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x31,0x6d }); }
+    else if(strcmp("me",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x28,0x42,0x1b,0x5b,0x6d }); }
 
     if((NULL != result) && (NULL != area)) {
         *area = result;
