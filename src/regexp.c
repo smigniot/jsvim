@@ -1224,12 +1224,12 @@ regexp *r;
 	if (op == ANYOF || op == ANYBUT || op == EXACTLY) {
 	    /* Literal string, where present. */
 	    while (*s != '\0') {
-		putchar(*s);
+		jsvim_putchar(*s);
 		s++;
 	    }
 	    s++;
 	}
-	putchar('\n');
+	jsvim_putchar('\n');
     }
 
     /* Header fields of interest. */

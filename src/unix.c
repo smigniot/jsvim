@@ -728,13 +728,13 @@ int	code;
 
 /*
  * This is a routine that can be passed to tputs() (in the termcap
- * library): it does the same thing as putchar().
+ * library): it does the same thing as jsvim_putchar().
  */
 int
 foutch(c)
 int	c;
 {
-    return(putchar(c));
+    return(jsvim_putchar(c));
 }
 
 /*

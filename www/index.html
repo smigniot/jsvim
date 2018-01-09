@@ -16,6 +16,13 @@
     }
 
     var __IO_KEYS = [];
+    function vim_putchar(c) {
+      return Module.charIn(c);
+    }
+    function vim_tgetflag(name) {
+      console.log("vim_tgetflag(",name,")");
+      return 0;
+    }
     function vim_kbgetc() {
         var key_struct_list = __IO_KEYS.splice(0,1);
         if(key_struct_list.length) {
@@ -35,7 +42,8 @@
         io_keys: [],
         preRun: [(function() {
             function charIn(c) {
-                 vim_charIn(c);
+                //document.querySelector("#terminal-container").term.write(String.fromCharCode(c));
+                vim_charIn(c);
             }
             Module.charIn = charIn;
             var _t = document.querySelector("#terminal-container").term;

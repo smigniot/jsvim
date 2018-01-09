@@ -172,7 +172,11 @@ int tputs(const char *str, int affcnt, int (*putc)(int)) {
 }
 
 int tgetflag(char *id) {
-    return ERR;
+    return EM_ASM_INT({return vim_tgetflag(UTF8ToString($0))},id);
+}
+
+int jsvim_putchar(char c) {
+    return EM_ASM_INT({return vim_putchar($0)},c);
 }
 
 int tgetent(char *bp, const char *name) {
@@ -208,6 +212,10 @@ char *tgetstr(char *id, char **area) {
     else if(strcmp("dl",id)==0) { result = strdup("\033[1M"); }
     else if(strcmp("ho",id)==0) { result = strdup("\033[H"); }
     else if(strcmp("cs",id)==0) { result = strdup("\033[%i%p1%d;%p2%dr"); }
+    else if(strcmp("sf",id)==0) { result = strdup("\n"); }
+    else if(strcmp("sr",id)==0) { result = strdup((unsigned char[]){0x1B,0x4D}); }
+    else if(strcmp("SF",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x25,0x70,0x31,0x25,0x64,0x53 }); }
+    else if(strcmp("SR",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x25,0x70,0x31,0x25,0x64,0x54 }); }
     // TODO: now at `cs' capability
     // man terminfo
 

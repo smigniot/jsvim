@@ -156,7 +156,7 @@
  * These are needed for the termcap terminal interface module.
  */
 #define oflush()	(void) fflush(stdout)
-#define moutch(c)	putchar(c)
+#define moutch(c)	jsvim_putchar(c)
 
 /*
  * Declarations for standard UNIX functions.

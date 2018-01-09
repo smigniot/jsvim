@@ -533,7 +533,7 @@ int	nlines;
 	 */
 	(void) printf("\033[%d;1H", end_row + 1);	/* goto bottom left */
 	for (count = 0; count < nlines; count++) {
-	    putchar('\n');
+	    jsvim_putchar('\n');
 	}
     }
     (void) printf("\033[1;%dr", scr->pv_rows);		/* set scroll region */
@@ -610,7 +610,7 @@ static void
 pbeep(scr)
 VirtScr	*scr;
 {
-    putchar('\007');
+    jsvim_putchar('\007');
     fflush(stdout);
 }
 

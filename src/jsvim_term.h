@@ -13,6 +13,7 @@ int tgetnum(char *id);
 char *tgetstr(char *id, char **area);
 char *tgoto(char *cap, int col, int row);
 int kbgetc();
+int jsvim_putchar(char c);
 
 #endif
 
