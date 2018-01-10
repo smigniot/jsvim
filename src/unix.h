@@ -48,7 +48,7 @@
  * Default value for helpfile parameter.
  */
 #ifndef HELPFILE
-#   define  HELPFILE	"/usr/local/lib/xvi.help"
+#   define  HELPFILE	"/jsxvi.help"
 #endif
 
 #if defined(sun) || defined(ultrix) || defined(XENIX) || defined(__STDC__)

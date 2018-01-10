@@ -71,7 +71,23 @@
                 return null;
             },charIn,function(c) {
                 console.log("NON-xvi stdout/stderr", c);
-            })
+            });
+            FS.writeFile("jsxvi.help", [
+                "~",
+                " ",
+                "           JSXvi - Xvi JavaScript",
+                " ",
+                "               version 1.0.0",
+                "     by Sebastien Migniot, thx Martin Guy",
+                " JSxvi is open source and freely distributable",
+                " ",
+                "            Become an xvi user !",
+                " open  https://github.com/smigniot    for JSXvi",
+                " open  https://github.com/martinwguy  for Xvi",
+                " ",
+                " type  :help<Enter>                   for help",
+                " type  :q<Enter>                      to exit",
+              ].join("\n~ "));
         })],
         postRun: [(function(){
             function timed_main_loop() {
