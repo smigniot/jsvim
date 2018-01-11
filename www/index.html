@@ -12,7 +12,9 @@
     function vim_getRows() { return 24; }
     function vim_charIn(c) {
       //console.log("OUT",c);
-      document.querySelector("#terminal-container").term.write(String.fromCharCode(c));
+      if(c) { // NO padding on this DOM terminal
+        document.querySelector("#terminal-container").term.write(String.fromCharCode(c));
+      }
     }
 
     var __IO_KEYS = [];
@@ -23,7 +25,7 @@
       console.log("vim_tgetflag(",name,")");
       //auto_right_margin         am    am    terminal has automatic
       //margins
-      if(name == "am") return 0; // No terminal auto-wrap at end of line
+      if(name == "am") return 1; // Terminal auto-wrap at end of line
       //eat_newline_glitch        xenl  xn    newline ignored
       //after 80 cols (concept)
       if(name == "xn") return 0; // Never ignore newlines, even after 80col
@@ -92,7 +94,7 @@
         postRun: [(function(){
             function timed_main_loop() {
                 Module._jsvim_main_loop();
-                setTimeout(timed_main_loop, 100);
+                setTimeout(timed_main_loop, 33);
             }
             console.log("START main loop");   
             timed_main_loop();
@@ -104,10 +106,25 @@
         totalDependencies: 0,
         monitorRunDependencies: function(left) {},
     };
+    function keyboard_type(e) {
+      var txt = e.textContent;
+      var keys = txt.match(/(.|[\r\n])/gm).map(s=>s.charCodeAt(0)).map(c=>{return{c:c,hint:txt,ch:String.fromCharCode(c)}});
+      keys.forEach(k=>__IO_KEYS.push(k));
+      // "k" : key || event.key,
+      // "c" : event.charCode,
+      // "kc" : event.keyCode,
+    }
 </script>
   </head>
             <body>
 
+    <p>Try <code>:e /jsxvi.help</code></p>
+    <section style="position:absolute;right:0">
+      <code style="display:block;white-space:pre;" onclick='keyboard_type(this)'>i#
+# Hello world
+#&#27;</code>
+      <code style="display:block;white-space:pre;" onclick='keyboard_type(this)'>oSome test failed&#27;:.s/test.failed/success so far/&#10;</code>
+    </section>
     <div id="terminal-container"></div> 
 
     <script type="text/javascript">

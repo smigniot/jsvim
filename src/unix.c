@@ -182,7 +182,14 @@ static	Termstate	cooked_state, raw_state;
 /*
  * Expected for termcap's benefit.
  */
-short		ospeed = 19200;			/* JSVIM: max legal as short */
+/*
+ * ospeed has proven hard to tune :
+ * - it is not the speed of your blazing terminal (max_int ?)
+ * - it is the speed BELOW which padding occurs
+ * - for jsxvi, the DOM modifications are blocking
+ *   from the _jsvim_main_loop point of view and thus atomic
+ */
+short		ospeed = 0;			/* JSVIM: never need padding */
 
 /*
  * We sometimes use a lot of system calls while trying to read from

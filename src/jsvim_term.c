@@ -204,15 +204,15 @@ char *tgetstr(char *id, char **area) {
     else if(strcmp("bc",id)==0) { result = strdup("\b"); }
     else if(strcmp("up",id)==0) { result = strdup("\033[1A"); }
     else if(strcmp("do",id)==0) { result = strdup("\033[1B"); }
-    else if(strcmp("cr",id)==0) { result = strdup("\r"); }
-    else if(strcmp("nd",id)==0) { result = strdup("\033[1C"); }
-    else if(strcmp("ce",id)==0) { result = strdup("\033[K"); }
-    else if(strcmp("cl",id)==0) { result = strdup("\033[2J"); }
-    else if(strcmp("al",id)==0) { result = strdup("\033[1L"); }
-    else if(strcmp("dl",id)==0) { result = strdup("\033[1M"); }
-    else if(strcmp("ho",id)==0) { result = strdup("\033[H"); }
+    else if(strcmp("cr",id)==0) { result = strdup((unsigned char[]){ 0x0d }); }
+    else if(strcmp("nd",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x43 }); }
+    else if(strcmp("ce",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x4b }); }
+    else if(strcmp("cl",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x48,0x1b,0x5b,0x32,0x4a }); }
+    else if(strcmp("al",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x4b }); }
+    else if(strcmp("dl",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x4d }); }
+    else if(strcmp("ho",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x48 }); }
     else if(strcmp("cs",id)==0) { result = strdup("\033[%i%p1%d;%p2%dr"); }
-    else if(strcmp("sf",id)==0) { result = strdup("\n"); }
+    else if(strcmp("sf",id)==0) { result = strdup((unsigned char[]){ 0x0a }); }
     else if(strcmp("sr",id)==0) { result = strdup((unsigned char[]){ 0x1B,0x4D }); }
     else if(strcmp("SF",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x25,0x70,0x31,0x25,0x64,0x53 }); }
     else if(strcmp("SR",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x25,0x70,0x31,0x25,0x64,0x54 }); }
