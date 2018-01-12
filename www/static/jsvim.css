@@ -1,4 +1,13 @@
 #terminal-container {
     width: 570px;
 }
+.tests code {
+    white-space:pre;
+    font-family:monospace;
+    font-size: 8pt;
+    margin:5px;
+    border:1px solid gray;
+    border-radius: 5px;
+    padding:5px;
+}
 

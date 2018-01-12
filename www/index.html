@@ -94,7 +94,7 @@
         postRun: [(function(){
             function timed_main_loop() {
                 Module._jsvim_main_loop();
-                setTimeout(timed_main_loop, 33);
+                setTimeout(timed_main_loop, 10);
             }
             console.log("START main loop");   
             timed_main_loop();
@@ -119,11 +119,13 @@
             <body>
 
     <p>JSXvi development version - try <code>:e jsxvi.help</code></p>
-    <section style="position:absolute;right:0">
+    <section style="position:absolute;right:0" class="tests">
       <code style="display:block;white-space:pre;" onclick='keyboard_type(this)'>i#
 # Hello world
 #&#27;</code>
       <code style="display:block;white-space:pre;" onclick='keyboard_type(this)'>oSome test failed&#27;:.s/test.failed/success so far/&#10;</code>
+      <code style="display:block;white-space:pre;" onclick='keyboard_type(this)'>oSome things&#27;bcwserious matter&#10;&#27;</code>
+      <code style="display:block;white-space:pre;" onclick='keyboard_type(this)'>oSome other things&#27;bcwserious matter&#10;&#27;</code>
     </section>
     <div id="terminal-container"></div> 
 
