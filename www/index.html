@@ -8,14 +8,18 @@
     <script type="text/javascript" src="static/xterm.js"></script>
     <script type="text/javascript" src="static/jsvmain.js"></script>
 <script type="text/javascript">
+    function debug_tput(str, affcnt, foo) {
+      console.log("TPUTS", {str:str,affcnt:affcnt,foo:foo});
+    }
     function vim_tgetnum(name) {
       var res = sub_vim_tgetnum(name) || 0;
-      console.log("TGET", name, res);
+      console.log("TGETNUM", name, res);
       return res;
     }
     function sub_vim_tgetnum(name) {
       if(name == "co") return 80;
       if(name == "li") return 24;
+      return -1;
     }
     function vim_getColumns() { return 80; }
     function vim_getRows() { return 24; }
@@ -33,15 +37,13 @@
       return Module.charIn(c);
     }
     function vim_tgetflag(name) {
-      console.log("vim_tgetflag(",name,")");
-      //auto_right_margin         am    am    terminal has automatic
-      //margins
+      var res = sub_vim_tgetflag(name);
+      console.log("vim_tgetflag(",name,") = ["+res+"]");
+      return res;
+    }
+    function sub_vim_tgetflag(name) {
       if(name == "am") return 1; // Terminal auto-wrap at end of line
-      //eat_newline_glitch        xenl  xn    newline ignored
-      //after 80 cols (concept)
       if(name == "xn") return 0; // Never ignore newlines, even after 80col
-      //move_standout_mode        msgr  ms    safe to move while
-      //in standout mode
       if(name == "ms") return 1; // Safe to move
       return 0;
     }
@@ -142,6 +144,7 @@
       -->
       <code onclick='send_term(this)'>back to (0,0)&#x1B;[1;1H</code>
       <code onclick='send_term(this)'>Hello</code>
+      <code onclick='send_term(this)'>1234567</code>
       <code onclick='send_term(this)'>&#35;&#27;&#91;&#50;&#52;&#59;&#57;&#102;&#27;&#91;&#55;&#109;&#91;&#77;&#111;&#100;&#105;&#102;&#105;&#101;&#100;&#93;</code>
 
       <h3>Send to xvi</h3>
@@ -149,8 +152,8 @@
       <code onclick='keyboard_type(this)'>i#
 # Hello world
 #&#27;</code>
-      <code onclick='keyboard_type(this)'>oSome things&#27;bcWserious matter&#10;&#27;</code>
       <code onclick='keyboard_type(this)'>oSome other things&#27;bcwserious matter&#10;&#27;</code>
+      <code onclick='keyboard_type(this)'>oSome other things&#27;2bc2wwow effect&#10;&#27;</code>
     </section>
     <div id="terminal-container"></div> 
 

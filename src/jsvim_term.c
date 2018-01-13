@@ -159,7 +159,7 @@ int terminfo_linux_len = 1794;
 
 int tputs(const char *str, int affcnt, int (*putc)(int)) {
     const char *p = str;
-    EM_ASM_({console.log("TPUTS",UTF8ToString($0),$1,$2);},str, affcnt, putc);
+    EM_ASM_({debug_tput(UTF8ToString($0),$1,$2);},str, affcnt, putc);
     while(*p) {
         putc(*p);
         p++;
@@ -182,6 +182,7 @@ int jsvim_putchar(char c) {
 int tgetent(char *bp, const char *name) {
     // Return the constant linux termcap entry
     strcpy(bp, terminfo_linux);
+    EM_ASM_({console.log("tgetent("+UTF8ToString($0)+") = ["+UTF8ToString($1)+"]");}, name,bp);
     return terminfo_linux_len;
 }
 
@@ -203,29 +204,30 @@ int tgetnum(char *id) {
 
 char *tgetstr(char *id, char **area) {
     char *result = NULL;
-    //if(strcmp("cm",id)==0) { result = strdup("\033[<L>;<C>f"); }
-    if(strcmp("cm",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x25,0x69,0x25,0x70,0x31,0x25,0x64,0x3b,0x25,0x70,0x32,0x25,0x64,0x48 }); }
-    else if(strcmp("bc",id)==0) { result = strdup("\b"); }
-    else if(strcmp("up",id)==0) { result = strdup("\033[1A"); }
-    else if(strcmp("do",id)==0) { result = strdup("\033[1B"); }
-    else if(strcmp("cr",id)==0) { result = strdup((unsigned char[]){ 0x0d }); }
-    else if(strcmp("nd",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x43 }); }
-    else if(strcmp("ce",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x4b }); }
-    else if(strcmp("cl",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x48,0x1b,0x5b,0x32,0x4a }); }
-    else if(strcmp("al",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x4b }); }
-    else if(strcmp("dl",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x4d }); }
-    else if(strcmp("ho",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x48 }); }
-    else if(strcmp("cs",id)==0) { result = strdup("\033[%i%p1%d;%p2%dr"); }
-    else if(strcmp("sf",id)==0) { result = strdup((unsigned char[]){ 0x0a }); }
-    else if(strcmp("sr",id)==0) { result = strdup((unsigned char[]){ 0x1B,0x4D }); }
-    else if(strcmp("SF",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x25,0x70,0x31,0x25,0x64,0x53 }); }
-    else if(strcmp("SR",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x25,0x70,0x31,0x25,0x64,0x54 }); }
-    else if(strcmp("mr",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x37,0x6d }); }
-    else if(strcmp("md",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x31,0x6d }); }
-    else if(strcmp("me",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x28,0x42,0x1b,0x5b,0x6d }); }
+    if(strcmp("cm",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x25,0x69,0x25,0x70,0x31,0x25,0x64,0x3b,0x25,0x70,0x32,0x25,0x64,0x48,0}); }
+    else if(strcmp("bc",id)==0) { result = strdup((unsigned char[]){ 0x08,0}); }
+    else if(strcmp("up",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x41,0}); }
+    else if(strcmp("do",id)==0) { result = strdup((unsigned char[]){ 0x0a,0}); }
+    else if(strcmp("cr",id)==0) { result = strdup((unsigned char[]){ 0x0d,0}); }
+    else if(strcmp("nd",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x43,0}); }
+    else if(strcmp("ce",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x4b,0}); }
+    else if(strcmp("cl",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x48,0x1b,0x5b,0x32,0x4a,0}); }
+    else if(strcmp("al",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x4b,0}); }
+    else if(strcmp("dl",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x4d,0}); }
+    else if(strcmp("ho",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x48,0}); }
+    else if(strcmp("cs",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x25,0x69,0x25,0x70,0x31,0x25,0x64,0x3b,0x25,0x70,0x32,0x25,0x64,0x72,0 }); }
+    else if(strcmp("sf",id)==0) { result = strdup((unsigned char[]){ 0x0a,0}); }
+    else if(strcmp("sr",id)==0) { result = strdup((unsigned char[]){ 0x1B,0x4D,0}); }
+    else if(strcmp("SF",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x25,0x70,0x31,0x25,0x64,0x53,0}); }
+    else if(strcmp("SR",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x25,0x70,0x31,0x25,0x64,0x54,0}); }
+    else if(strcmp("mr",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x37,0x6d,0}); }
+    else if(strcmp("md",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x31,0x6d,0}); }
+    else if(strcmp("me",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x28,0x42,0x1b,0x5b,0x6d,0}); }
 
     if((NULL != result) && (NULL != area)) {
         *area = result;
+    } else if(NULL != area) {
+        *area = NULL;
     }
     EM_ASM_({console.log("TGETSTR",UTF8ToString($0),"=", (0==$1)?"NULL":UTF8ToString($1));},id,result);
     return result;
