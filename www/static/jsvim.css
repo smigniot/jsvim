@@ -1,6 +1,12 @@
 #terminal-container {
     width: 570px;
 }
+
+/* DBG */
+.tests {
+    position: absolute;
+    right:0;
+}
 .tests code {
     white-space:pre;
     font-family:monospace;
@@ -9,5 +15,6 @@
     border:1px solid gray;
     border-radius: 5px;
     padding:5px;
+    display:block;
 }
 

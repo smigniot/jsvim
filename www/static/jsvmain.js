@@ -4,12 +4,11 @@ function startJsvim(container) {
         fontSize: 12,
         tabStopWidth: 4,
         cursorBlink: true,
-        convertEol: true,
+        convertEol: false,
     });
     term.open(container);
     return term;
 }
-
 function jsvimOnLoad() {
     var $ = s=>document.querySelector(s);
     var container = $('#terminal-container');

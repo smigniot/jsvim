@@ -186,6 +186,8 @@ int tgetent(char *bp, const char *name) {
 }
 
 int tgetnum(char *id) {
+    return EM_ASM_INT({return vim_tgetnum(UTF8ToString($0))},id);
+    /*
     if(strcmp(id,"li")==0) { 
         return 24; 
     } else if(strcmp(id,"co")==0) {
@@ -195,12 +197,14 @@ int tgetnum(char *id) {
     } else {
         return 0;
     }
+    */
 }
 
 
 char *tgetstr(char *id, char **area) {
     char *result = NULL;
-    if(strcmp("cm",id)==0) { result = strdup("\033[<L>;<C>f"); }
+    //if(strcmp("cm",id)==0) { result = strdup("\033[<L>;<C>f"); }
+    if(strcmp("cm",id)==0) { result = strdup((unsigned char[]){ 0x1b,0x5b,0x25,0x69,0x25,0x70,0x31,0x25,0x64,0x3b,0x25,0x70,0x32,0x25,0x64,0x48 }); }
     else if(strcmp("bc",id)==0) { result = strdup("\b"); }
     else if(strcmp("up",id)==0) { result = strdup("\033[1A"); }
     else if(strcmp("do",id)==0) { result = strdup("\033[1B"); }
@@ -228,7 +232,7 @@ char *tgetstr(char *id, char **area) {
 }
 
 char *tgoto(char *cap, int col, int row) {
-    sprintf(cap, "\033[%d;%df", row, col);
+    sprintf(cap, "\033[%d;%df", row+1, col+1); // Yikes, 1 week of debugging
     return cap;
 }
 

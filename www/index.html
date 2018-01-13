@@ -8,12 +8,23 @@
     <script type="text/javascript" src="static/xterm.js"></script>
     <script type="text/javascript" src="static/jsvmain.js"></script>
 <script type="text/javascript">
+    function vim_tgetnum(name) {
+      var res = sub_vim_tgetnum(name) || 0;
+      console.log("TGET", name, res);
+      return res;
+    }
+    function sub_vim_tgetnum(name) {
+      if(name == "co") return 80;
+      if(name == "li") return 24;
+    }
     function vim_getColumns() { return 80; }
     function vim_getRows() { return 24; }
     function vim_charIn(c) {
-      //console.log("OUT",c);
+      console.log("OUT",c, String.fromCharCode(c));
       if(c) { // NO padding on this DOM terminal
-        document.querySelector("#terminal-container").term.write(String.fromCharCode(c));
+        //if(c != 7) { // xtermjs is reacting w.3.1.r.d !
+          document.querySelector("#terminal-container").term.write(String.fromCharCode(c));
+        //}
       }
     }
 
@@ -106,26 +117,40 @@
         totalDependencies: 0,
         monitorRunDependencies: function(left) {},
     };
+    function send_term(e) {
+      var txt = e.textContent;
+      var keys = txt.match(/(.|[\r\n])/gm).map(s=>s.charCodeAt(0)).map(c=>{return{c:c,hint:txt,ch:String.fromCharCode(c)}});
+      console.log("TERMK", keys);
+      var t = document.querySelector("#terminal-container").term;
+      keys.forEach(k=>t.write(String.fromCharCode(k.c)));
+    }
     function keyboard_type(e) {
       var txt = e.textContent;
       var keys = txt.match(/(.|[\r\n])/gm).map(s=>s.charCodeAt(0)).map(c=>{return{c:c,hint:txt,ch:String.fromCharCode(c)}});
       keys.forEach(k=>__IO_KEYS.push(k));
-      // "k" : key || event.key,
-      // "c" : event.charCode,
-      // "kc" : event.keyCode,
     }
 </script>
   </head>
             <body>
 
     <p>JSXvi development version - try <code>:e jsxvi.help</code></p>
-    <section style="position:absolute;right:0" class="tests">
-      <code style="display:block;white-space:pre;" onclick='keyboard_type(this)'>i#
+    <section class="tests">
+      <h3>Send to term</h3>
+      <!--
+      <code onclick='send_term(this)'>line 1 with CRLF&#10;&#13;line 2&#10;&#13;line 3&#10;&#13;</code>
+      <code onclick='send_term(this)'>line 1 with CR only&#10;line2&#10;line 3&#10;</code>
+      -->
+      <code onclick='send_term(this)'>back to (0,0)&#x1B;[1;1H</code>
+      <code onclick='send_term(this)'>Hello</code>
+      <code onclick='send_term(this)'>&#35;&#27;&#91;&#50;&#52;&#59;&#57;&#102;&#27;&#91;&#55;&#109;&#91;&#77;&#111;&#100;&#105;&#102;&#105;&#101;&#100;&#93;</code>
+
+      <h3>Send to xvi</h3>
+      <code onclick='keyboard_type(this)'>oSome test failed&#27;:.s/test.failed/success so far/&#10;</code>
+      <code onclick='keyboard_type(this)'>i#
 # Hello world
 #&#27;</code>
-      <code style="display:block;white-space:pre;" onclick='keyboard_type(this)'>oSome test failed&#27;:.s/test.failed/success so far/&#10;</code>
-      <code style="display:block;white-space:pre;" onclick='keyboard_type(this)'>oSome things&#27;bcwserious matter&#10;&#27;</code>
-      <code style="display:block;white-space:pre;" onclick='keyboard_type(this)'>oSome other things&#27;bcwserious matter&#10;&#27;</code>
+      <code onclick='keyboard_type(this)'>oSome things&#27;bcWserious matter&#10;&#27;</code>
+      <code onclick='keyboard_type(this)'>oSome other things&#27;bcwserious matter&#10;&#27;</code>
     </section>
     <div id="terminal-container"></div> 
 

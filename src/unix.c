@@ -189,7 +189,8 @@ static	Termstate	cooked_state, raw_state;
  * - for jsxvi, the DOM modifications are blocking
  *   from the _jsvim_main_loop point of view and thus atomic
  */
-short		ospeed = 0;			/* JSVIM: never need padding */
+short		ospeed = 19600;			/* JSVIM: never need padding */
+//short		ospeed = 0;			/* JSVIM: never need padding */
 
 /*
  * We sometimes use a lot of system calls while trying to read from
